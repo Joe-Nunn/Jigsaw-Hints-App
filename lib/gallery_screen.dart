@@ -10,6 +10,7 @@ class GalleryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<File> reversedChildren = images.reversed.toList();
     return Scaffold(
       appBar: const JigsawAppBar(
         title: "Saved Boxes",
@@ -22,7 +23,7 @@ class GalleryScreen extends StatelessWidget {
           crossAxisCount: 3,
           mainAxisSpacing: 2,
           crossAxisSpacing: 2,
-          children: images
+          children: reversedChildren
               .map((image) => Image.file(image, fit: BoxFit.cover))
               .toList(),
         ),

@@ -20,16 +20,16 @@ class GuidelineBox extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             width: 2,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
         child: Align(
           alignment: Alignment.topLeft,
           child: Container(
-            color: Colors.blue,
-            child: const Text(
+            color: Theme.of(context).colorScheme.secondary,
+            child: Text(
               'Jigsaw Piece',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ),

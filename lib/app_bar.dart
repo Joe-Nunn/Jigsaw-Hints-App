@@ -10,14 +10,14 @@ class JigsawAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       iconTheme: const IconThemeData(
-        color: Colors.black, //change your color here
+        color: Colors.black,
       ),
       actions: [
         Padding(
           padding: const EdgeInsets.all(defaultAppBarPadding),
           child: Text(
             title,
-            style: const TextStyle(fontSize: 20, color: Colors.black),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
       ],

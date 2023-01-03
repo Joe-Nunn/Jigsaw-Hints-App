@@ -6,10 +6,11 @@ import 'package:showcaseview/showcaseview.dart';
 import 'constants.dart';
 import 'drawer_menu.dart';
 import 'guideline_box.dart';
-import 'popup_dialog.dart';
+import 'info_dialog.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
+  static List<File> capturedImages = [];
   const CameraScreen({
     Key? key,
     required this.cameras,
@@ -30,7 +31,6 @@ class _CameraScreenState extends State<CameraScreen> {
   late Future<void>
       _initializeControllerFuture; //Future to wait until camera initializes
   int selectedCamera = 0;
-  List<File> capturedImages = [];
   bool flashlightOn = false;
   final GlobalKey<ScaffoldState> _key =
       GlobalKey(); // Create a key for drawer menu
@@ -53,6 +53,9 @@ class _CameraScreenState extends State<CameraScreen> {
 
     // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
+
+    // Turn off flash by default
+    _controller.setFlashMode(FlashMode.off);
   }
 
   @override
@@ -81,7 +84,6 @@ class _CameraScreenState extends State<CameraScreen> {
             drawer: SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: DrawerMenu(
-                images: capturedImages.reversed.toList(),
                 globalKeys: [bottomLeft, bottomCenter, bottomRight],
               ),
             ),
@@ -126,8 +128,11 @@ class _CameraScreenState extends State<CameraScreen> {
                       key: keys.elementAt(0),
                       description: 'Feature in progress...',
                       child: IconButton(
-                          onPressed: () => dialogBuilder(context, "Disclaimer",
-                              "We cannot afford Apple products, so this app only works on Android."),
+                          onPressed: () => showInfoDialog(context,
+                              title: "Disclaimer",
+                              content:
+                                  "We cannot afford Apple products, so this app only works on Android.",
+                              titleBgColor: Colors.red),
                           icon: const Icon(
                             Icons.apple,
                             color: Colors.white,
@@ -142,38 +147,23 @@ class _CameraScreenState extends State<CameraScreen> {
                     onPressed: () async {
                       await _initializeControllerFuture;
                       var xFile = await _controller.takePicture();
+                      var path = xFile.path;
                       setState(() {
-                        capturedImages.add(File(xFile.path));
+                        CameraScreen.capturedImages.add(File(path));
                       });
+                      if (!mounted) return;
+                      showDialog(
+                          context: context,
+                          builder: (_) => imageDialog(context, path));
                     },
                     style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(32),
-                        foregroundColor: secondaryColour),
+                        foregroundColor:
+                            Theme.of(context).colorScheme.secondary),
                     child: const SizedBox(),
                   ),
                 ),
-                // child: GestureDetector(
-                //   onTap: () async {
-                //     await _initializeControllerFuture;
-                //     var xFile = await _controller.takePicture();
-                //     setState(() {
-                //       capturedImages.add(File(xFile.path));
-                //     });
-                //   },
-                //   child: Showcase(
-                //     key: keys.elementAt(1),
-                //     description: 'Take photo of a puzzle',
-                //     child: Container(
-                //       height: 60,
-                //       width: 60,
-                //       decoration: const BoxDecoration(
-                //         shape: BoxShape.circle,
-                //         color: Colors.white,
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ),
               Positioned(
                 right: 0,
