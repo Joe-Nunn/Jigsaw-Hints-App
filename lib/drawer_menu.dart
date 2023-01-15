@@ -1,25 +1,24 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/camera_screen.dart';
+import 'package:jigsaw_hints/settings/settings_page.dart';
 import 'package:showcaseview/showcaseview.dart';
 
+import 'constants.dart';
 import 'gallery_screen.dart';
 
 class DrawerMenu extends StatelessWidget {
-  final List<File> images;
   final List<GlobalKey> globalKeys;
 
-  const DrawerMenu({Key? key, required this.images, required this.globalKeys})
-      : super(key: key);
+  const DrawerMenu({Key? key, required this.globalKeys}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white.withOpacity(0.9),
+      backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
       child: ListView(
         children: [
           Container(
-            color: const Color(0xfff3ebe3),
+            color: logoBgColour,
             child: DrawerHeader(
               child: Center(
                 child: Image.asset(
@@ -37,7 +36,8 @@ class DrawerMenu extends StatelessWidget {
             ),
             title: const MenuText('Saved Boxes'),
             onTap: () {
-              Navigator.push(context, slideIn(GalleryScreen(images: images)));
+              Navigator.push(context,
+                  slideIn(GalleryScreen(images: CameraScreen.capturedImages)));
             },
           ),
           ListTile(
@@ -46,7 +46,7 @@ class DrawerMenu extends StatelessWidget {
             ),
             title: const MenuText('Settings'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(context, slideIn(const SettingsPage()));
             },
           ),
           ListTile(
@@ -74,26 +74,18 @@ class DrawerMenu extends StatelessWidget {
   }
 }
 
-// Create a custom widget like this
 class MenuText extends StatelessWidget {
   final String text;
-  final bool isBold;
 
-  const MenuText(this.text, {super.key, this.isBold = false});
+  const MenuText(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        style: TextStyle(
-          fontSize: 20,
-          fontFamily: 'Rubik',
-          color: Colors.black,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-        ));
+    return Text(text, style: Theme.of(context).textTheme.titleMedium);
   }
 }
 
-// Saved Boxes page navigation animation
+// Page transition animation
 Route slideIn(Widget page) {
   return PageRouteBuilder(
     opaque: false,
