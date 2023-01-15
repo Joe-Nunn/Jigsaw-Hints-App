@@ -116,9 +116,6 @@ Widget imageDialog(BuildContext context, String path) {
 
 Widget popButton(BuildContext context, {String text = "Ok", Color? color}) {
   return TextButton(
-    //style: TextButton.styleFrom(
-    //  textStyle: Theme.of(context).textTheme.labelLarge,
-    //),
     child: Text(text,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
     onPressed: () {
@@ -129,9 +126,6 @@ Widget popButton(BuildContext context, {String text = "Ok", Color? color}) {
 
 Widget goToGalleryButton(BuildContext context, String text, Color color) {
   return TextButton(
-    // style: TextButton.styleFrom(
-    //  textStyle: Theme.of(context).textTheme.labelLarge,
-    //),
     child: Text(text,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
     onPressed: () {
