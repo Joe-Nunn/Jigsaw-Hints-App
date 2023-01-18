@@ -11,10 +11,7 @@ import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../app_bar.dart';
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
-
-import '../info_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -24,11 +21,11 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  late SharedPreferences? sharedPrefs;
+  late SharedPreferences sharedPrefs;
 
   @override
   Widget build(BuildContext context) {
-    sharedPrefs = context.watch<SharedPreferences?>();
+    sharedPrefs = context.watch<SharedPreferences>();
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget settingTiles() {
-    var userName = sharedPrefs?.getString(userNameKey) ?? defaultUserName;
+    var userName = sharedPrefs.getString(userNameKey) ?? defaultUserName;
     return Padding(
       padding: const EdgeInsets.all(defaultContentPadding),
       child: ListView(
@@ -122,10 +119,11 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               SettingsItem(
                 onTap: () => Navigator.push(
-                    context,
-                    PageTransition(
-                        child: const AboutSettings(),
-                        type: PageTransitionType.fade)),
+                        context,
+                        PageTransition(
+                            child: const AboutSettings(),
+                            type: PageTransitionType.fade))
+                    .then((_) => setState(() {})),
                 icons: Icons.info_rounded,
                 iconStyle: IconStyle(
                   backgroundColor: Colors.purple,
@@ -147,7 +145,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          // You can add a settings title
         ],
       ),
     );

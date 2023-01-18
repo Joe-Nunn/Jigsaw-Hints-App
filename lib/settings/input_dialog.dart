@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -128,6 +129,67 @@ StatefulBuilder inputDialogSlider(BuildContext context,
             max: 100,
             divisions: 99,
             label: currentSliderValue.toString(),
+            thumbColor: defaultSliderActiveColour,
+            activeColor: defaultSliderActiveColour,
+            inactiveColor: defaultSliderInactiveColour,
+            onChanged: (double value) {
+              setState(() {
+                currentSliderValue = value.toInt();
+                if (currentSliderValue != currentValue) {
+                  valueHasChanged = true;
+                } else {
+                  valueHasChanged = false;
+                }
+              });
+            },
+          ),
+        ]),
+        actions: <Widget>[
+          Visibility(
+            visible: valueHasChanged,
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            child: TextButton(
+              child: Text(
+                "Apply",
+                style: Theme.of(context)
+                    .textTheme
+                    .labelMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+              ),
+              onPressed: () {
+                sharedPrefs.setInt(key, currentSliderValue);
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+StatefulBuilder inputDialogTextSlider(
+    BuildContext context,
+    SharedPreferences sharedPrefs,
+    String key,
+    int currentValue,
+    List<dynamic> options,
+    {String titleText = "Choose option using the slider"}) {
+  bool valueHasChanged = false;
+  int currentSliderValue = currentValue;
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return AlertDialog(
+        title: Text(titleText),
+        content: Wrap(children: [
+          Slider.adaptive(
+            value: currentSliderValue.toDouble(),
+            min: 0,
+            max: options.length - 1,
+            divisions: options.length - 1,
+            label: describeEnum(options[currentSliderValue]).toUpperCase(),
             thumbColor: defaultSliderActiveColour,
             activeColor: defaultSliderActiveColour,
             inactiveColor: defaultSliderInactiveColour,
