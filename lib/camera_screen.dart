@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/app_bar.dart';
+import 'package:jigsaw_hints/camera_mode.dart';
+import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'constants.dart';
 import 'drawer_menu.dart';
@@ -75,29 +77,31 @@ class _CameraScreenState extends State<CameraScreen> {
         MediaQuery.of(context).size.width / 2 - desiredPieceSize / 2;
     _position['y'] = MediaQuery.of(context).size.height / 2 - desiredPieceSize;
 
-    return ShowCaseWidget(
-      builder: Builder(
-        builder: (context) => SafeArea(
-          child: Scaffold(
-            key: _key,
-            appBar: const JigsawAppBar(title: "Jigsaw Hints"),
-            drawer: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
-              child: DrawerMenu(
-                globalKeys: [bottomLeft, bottomCenter, bottomRight],
+    return Consumer<CameraModeProvider>(builder: (context, cameraMode, child) {
+      return ShowCaseWidget(
+        builder: Builder(
+          builder: (context) => SafeArea(
+            child: Scaffold(
+              key: _key,
+              appBar: const JigsawAppBar(title: "Jigsaw Hints"),
+              drawer: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: DrawerMenu(
+                  globalKeys: [bottomLeft, bottomCenter, bottomRight],
+                ),
               ),
-            ),
-            backgroundColor: Colors.black,
-            body: Stack(
-              children: [
-                body(context, [bottomLeft, bottomCenter, bottomRight]),
-                GuidelineBox(position: _position),
-              ],
+              backgroundColor: Colors.black,
+              body: Stack(
+                children: [
+                  body(context, [bottomLeft, bottomCenter, bottomRight]),
+                  GuidelineBox(position: _position, mode: cameraMode.mode),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Column body(BuildContext context, List<GlobalKey> keys) {
@@ -148,10 +152,16 @@ class _CameraScreenState extends State<CameraScreen> {
                       await _initializeControllerFuture;
                       var xFile = await _controller.takePicture();
                       var path = xFile.path;
-                      setState(() {
-                        CameraScreen.capturedImages.add(File(path));
-                      });
                       if (!mounted) return;
+                      var cameraMode = Provider.of<CameraModeProvider>(context,
+                          listen: false);
+                      if (cameraMode.mode == CameraMode.box) {
+                        setState(() {
+                          CameraScreen.capturedImages.add(File(path));
+                        });
+                        cameraMode.mode = CameraMode.piece;
+                        return;
+                      }
                       showDialog(
                           context: context,
                           builder: (_) => imageDialog(context, path));
@@ -197,4 +207,9 @@ class _CameraScreenState extends State<CameraScreen> {
       ],
     );
   }
+}
+
+enum CameraMode {
+  piece,
+  box,
 }

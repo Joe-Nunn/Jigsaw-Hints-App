@@ -1,7 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/camera_mode.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
-import 'package:jigsaw_hints/settings/user.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'camera_screen.dart';
@@ -20,7 +20,7 @@ void main() async {
         create: (context) =>
             context.read<SharedPreferencesProvider>().prefsState,
         initialData: null),
-    ChangeNotifierProvider(create: (context) => User()),
+    ChangeNotifierProvider(create: (context) => CameraModeProvider()),
   ], child: MyApp(cameras: cameras)));
 }
 

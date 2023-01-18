@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/camera_mode.dart';
 import 'package:jigsaw_hints/constants.dart';
+import 'package:provider/provider.dart';
 
 import 'camera_screen.dart';
 import 'drawer_menu.dart';
@@ -89,9 +91,17 @@ Widget imageDialog(BuildContext context, String path) {
                       title: "Select a box picture",
                       leftButton: goToGalleryButton(context, "Saved Boxes",
                           Theme.of(context).colorScheme.tertiary),
-                      rightButton: popButton(context,
-                          text: "Take Photo",
-                          color: Theme.of(context).colorScheme.tertiary),
+                      rightButton: popButton(
+                        context,
+                        text: "Take Photo",
+                        color: Theme.of(context).colorScheme.tertiary,
+                        voidCallback: () {
+                          Provider.of<CameraModeProvider>(context,
+                                  listen: false)
+                              .mode = CameraMode.box;
+                          Navigator.of(context).pop();
+                        },
+                      ),
                       includePicture: true,
                       picture: Image.asset("images/jigsaw_box.png"));
                 },
@@ -114,13 +124,12 @@ Widget imageDialog(BuildContext context, String path) {
   );
 }
 
-Widget popButton(BuildContext context, {String text = "Ok", Color? color}) {
+Widget popButton(BuildContext context,
+    {String text = "Ok", Color? color, VoidCallback? voidCallback}) {
   return TextButton(
+    onPressed: voidCallback ?? () => Navigator.of(context).pop(),
     child: Text(text,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
   );
 }
 
