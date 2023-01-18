@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:jigsaw_hints/app_bar.dart';
 import 'package:jigsaw_hints/constants.dart';
+import 'package:jigsaw_hints/info_dialog.dart';
+import 'package:jigsaw_hints/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutSettings extends StatefulWidget {
   const AboutSettings({super.key});
@@ -34,5 +35,46 @@ class _AboutSettingsState extends State<AboutSettings> {
             subtitle: const Text('Installed version'),
             trailing: const Text('1.0.0'),
             onTap: () => {}),
+        ListTile(
+            leading: const Icon(
+              Icons.restart_alt_outlined,
+            ),
+            title: const Text('Reset Settings'),
+            subtitle: const Text('Set all settings back to default'),
+            onTap: () => showInfoDialog(context,
+                title: "Resetting all user settings",
+                content: "Are you sure?",
+                titleBgColor: Colors.redAccent,
+                rightButton: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: yesButton(context),
+                ),
+                leftButton: noButton(context))),
       ];
+
+  Widget yesButton(BuildContext context) {
+    return TextButton(
+      child: Text("Yes", style: Theme.of(context).textTheme.labelMedium),
+      onPressed: () {
+        resetUserData();
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget noButton(BuildContext context) {
+    return TextButton(
+      child: Text("No", style: Theme.of(context).textTheme.labelMedium),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  resetUserData() async {
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    await sharedPrefs.clear();
+    if (!mounted) return;
+    MyApp.of(context).setState(() {});
+  }
 }
