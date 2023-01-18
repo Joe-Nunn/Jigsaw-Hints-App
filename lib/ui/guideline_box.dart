@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/camera_screen.dart';
+import 'package:jigsaw_hints/pages/camera_screen.dart';
 
 class GuidelineBox extends StatelessWidget {
   const GuidelineBox({

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/app_bar.dart';
-import 'package:jigsaw_hints/constants.dart';
-import 'package:jigsaw_hints/info_dialog.dart';
-import 'package:jigsaw_hints/main.dart';
+import 'package:jigsaw_hints/ui/app_bar.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
+import 'package:jigsaw_hints/ui/info_dialog.dart';
+import 'package:jigsaw_hints/main/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutSettings extends StatefulWidget {

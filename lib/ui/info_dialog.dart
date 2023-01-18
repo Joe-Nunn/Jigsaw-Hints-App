@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/camera_mode.dart';
-import 'package:jigsaw_hints/constants.dart';
+import 'package:jigsaw_hints/provider/camera_mode.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
 
-import 'camera_screen.dart';
+import '../pages/camera_screen.dart';
 import 'drawer_menu.dart';
-import 'gallery_screen.dart';
+import '../pages/gallery_screen.dart';
 
 void showInfoDialog(BuildContext context,
     {String title = "Title",
@@ -139,7 +139,7 @@ Widget goToGalleryButton(BuildContext context, String text, Color color) {
         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
     onPressed: () {
       Navigator.push(
-          context, slideIn(GalleryScreen(images: CameraScreen.capturedImages)));
+          context, slideIn(GalleryScreen()));
     },
   );
 }

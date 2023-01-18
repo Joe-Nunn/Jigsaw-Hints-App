@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/constants.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/settings/about.dart';
 import 'package:jigsaw_hints/settings/accessibility.dart';
 import 'package:jigsaw_hints/settings/appearance.dart';

@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/app_bar.dart';
-import 'package:jigsaw_hints/camera_mode.dart';
+import 'package:jigsaw_hints/provider/images.dart';
+import 'package:jigsaw_hints/ui/app_bar.dart';
+import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'constants.dart';
-import 'drawer_menu.dart';
-import 'guideline_box.dart';
-import 'info_dialog.dart';
+import '../utils/constants.dart';
+import '../ui/drawer_menu.dart';
+import '../ui/guideline_box.dart';
+import '../ui/info_dialog.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
-  static List<File> capturedImages = [];
   const CameraScreen({
     Key? key,
     required this.cameras,
@@ -149,19 +149,17 @@ class _CameraScreenState extends State<CameraScreen> {
                   description: 'Take photo of a puzzle',
                   child: ElevatedButton(
                     onPressed: () async {
+                      // Ensure that the camera is initialized.
                       await _initializeControllerFuture;
+                      // Attempt to take a picture and get the file `image`
                       var xFile = await _controller.takePicture();
                       var path = xFile.path;
                       if (!mounted) return;
-                      var cameraMode = Provider.of<CameraModeProvider>(context,
-                          listen: false);
-                      if (cameraMode.mode == CameraMode.box) {
-                        setState(() {
-                          CameraScreen.capturedImages.add(File(path));
-                        });
-                        cameraMode.mode = CameraMode.piece;
-                        return;
-                      }
+                      setState(() {
+                        Provider.of<ImagesProvider>(context, listen: false)
+                            .capturedImages
+                            .add(File(path));
+                      });
                       showDialog(
                           context: context,
                           builder: (_) => imageDialog(context, path));

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/camera_screen.dart';
+import 'package:jigsaw_hints/pages/camera_screen.dart';
 import 'package:jigsaw_hints/settings/settings_page.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-import 'constants.dart';
-import 'gallery_screen.dart';
+import '../utils/constants.dart';
+import '../pages/gallery_screen.dart';
 
 class DrawerMenu extends StatelessWidget {
   final List<GlobalKey> globalKeys;
@@ -37,7 +37,7 @@ class DrawerMenu extends StatelessWidget {
             title: const MenuText('Saved Boxes'),
             onTap: () {
               Navigator.push(context,
-                  slideIn(GalleryScreen(images: CameraScreen.capturedImages)));
+                  slideIn(GalleryScreen()));
             },
           ),
           ListTile(

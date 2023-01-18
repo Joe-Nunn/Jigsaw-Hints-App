@@ -1,12 +1,13 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/camera_mode.dart';
+import 'package:jigsaw_hints/provider/camera_mode.dart';
+import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'camera_screen.dart';
-import 'constants.dart' as constants;
-import 'settings/shared_prefs.dart';
+import '../pages/camera_screen.dart';
+import '../utils/constants.dart' as constants;
+import '../settings/shared_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,7 @@ void main() async {
             context.read<SharedPreferencesProvider>().prefsState,
         initialData: null),
     ChangeNotifierProvider(create: (context) => CameraModeProvider()),
+    ChangeNotifierProvider(create: (context) => ImagesProvider()),
   ], child: MyApp(cameras: cameras)));
 }
 
