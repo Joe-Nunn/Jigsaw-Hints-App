@@ -1,13 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
-import 'package:provider/provider.dart';
 
-import '../pages/camera_screen.dart';
-import 'drawer_menu.dart';
-import '../pages/gallery_screen.dart';
 
 void showInfoDialog(BuildContext context,
     {String title = "Title",
@@ -87,23 +82,6 @@ Widget imageDialog(BuildContext context, String path) {
               IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  showInfoDialog(context,
-                      title: "Select a box picture",
-                      leftButton: goToGalleryButton(context, "Saved Boxes",
-                          Theme.of(context).colorScheme.tertiary),
-                      rightButton: popButton(
-                        context,
-                        text: "Take Photo",
-                        color: Theme.of(context).colorScheme.tertiary,
-                        voidCallback: () {
-                          Provider.of<CameraModeProvider>(context,
-                                  listen: false)
-                              .mode = CameraMode.box;
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      includePicture: true,
-                      picture: Image.asset("images/jigsaw_box.png"));
                 },
                 icon: const Icon(Icons.check_rounded),
                 color: Colors.green,
@@ -130,16 +108,5 @@ Widget popButton(BuildContext context,
     onPressed: voidCallback ?? () => Navigator.of(context).pop(),
     child: Text(text,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
-  );
-}
-
-Widget goToGalleryButton(BuildContext context, String text, Color color) {
-  return TextButton(
-    child: Text(text,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
-    onPressed: () {
-      Navigator.push(
-          context, slideIn(GalleryScreen()));
-    },
   );
 }

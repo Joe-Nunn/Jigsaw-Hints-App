@@ -28,7 +28,7 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
         title: "Settings",
       ),
       body: ListView(
-        padding: const EdgeInsets.all(defaultContentPadding),
+        padding: const EdgeInsets.all(defaultBigContentPadding),
         children: settingsTiles,
       ),
     );
