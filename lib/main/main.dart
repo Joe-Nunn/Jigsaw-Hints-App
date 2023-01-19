@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
@@ -23,6 +24,7 @@ void main() async {
         initialData: null),
     ChangeNotifierProvider(create: (context) => CameraModeProvider()),
     ChangeNotifierProvider(create: (context) => ImagesProvider()),
+    ChangeNotifierProvider(create: (context) => BoxCoverProvider()),
   ], child: MyApp(cameras: cameras)));
 }
 

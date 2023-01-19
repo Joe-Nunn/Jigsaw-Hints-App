@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/ui/app_bar.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
@@ -29,13 +30,20 @@ class _CameraScreenState extends State<CameraScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is disposed.
+    _controller.dispose();
+    super.dispose();
+  }
+
   late CameraController _controller; //To control the camera
   late Future<void>
       _initializeControllerFuture; //Future to wait until camera initializes
   int selectedCamera = 0;
   bool flashlightOn = false;
-  final GlobalKey<ScaffoldState> _key =
-      GlobalKey(); // Create a key for drawer menu
+  // Create a key for drawer menu
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   // Holds the position information of the guideline box
   final Map<String, double> _position = {
@@ -61,14 +69,8 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   @override
-  void dispose() {
-    // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Create a global key for each of the tutorial segments
     GlobalKey bottomLeft = GlobalKey();
     GlobalKey bottomCenter = GlobalKey();
     GlobalKey bottomRight = GlobalKey();
@@ -78,6 +80,10 @@ class _CameraScreenState extends State<CameraScreen> {
     _position['y'] = MediaQuery.of(context).size.height / 2 - desiredPieceSize;
 
     return Consumer<CameraModeProvider>(builder: (context, cameraMode, child) {
+      var boxCoverProvider =
+          Provider.of<BoxCoverProvider>(context, listen: true);
+      cameraMode.mode =
+          boxCoverProvider.boxCover == null ? CameraMode.box : CameraMode.piece;
       return ShowCaseWidget(
         builder: Builder(
           builder: (context) => SafeArea(
@@ -205,9 +211,4 @@ class _CameraScreenState extends State<CameraScreen> {
       ],
     );
   }
-}
-
-enum CameraMode {
-  piece,
-  box,
 }

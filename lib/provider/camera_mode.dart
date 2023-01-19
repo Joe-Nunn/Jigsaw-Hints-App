@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/pages/camera_screen.dart';
 
 class CameraModeProvider extends ChangeNotifier {
   CameraMode _mode = CameraMode.piece;
@@ -12,4 +11,9 @@ class CameraModeProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+}
+
+enum CameraMode {
+  piece,
+  box,
 }
