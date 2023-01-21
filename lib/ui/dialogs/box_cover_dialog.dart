@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/pages/gallery_screen.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
-import 'package:jigsaw_hints/ui/animations.dart';
+import 'package:jigsaw_hints/ui/animations/animations.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_button/animated_button.dart';
@@ -73,7 +73,7 @@ Widget getContent(BuildContext context, BoxCoverProvider boxCoverProvider) {
       ],
     );
   } else {
-    return Text("data");
+    return const Text("data");
   }
 }
 

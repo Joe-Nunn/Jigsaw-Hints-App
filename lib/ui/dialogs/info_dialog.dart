@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 
-
 void showInfoDialog(BuildContext context,
     {String title = "Title",
     Color titleBgColor = Colors.blue,

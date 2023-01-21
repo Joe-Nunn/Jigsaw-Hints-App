@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/settings/settings_page.dart';
-import 'package:jigsaw_hints/ui/animations.dart';
+import 'package:jigsaw_hints/ui/animations/animations.dart';
+import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-import '../utils/constants.dart';
-import '../pages/gallery_screen.dart';
+import '../../utils/constants.dart';
+import '../../pages/gallery_screen.dart';
 
 class DrawerMenu extends StatelessWidget {
   final List<GlobalKey> globalKeys;
@@ -36,8 +37,7 @@ class DrawerMenu extends StatelessWidget {
             ),
             title: const MenuText('Saved Boxes'),
             onTap: () {
-              Navigator.push(context,
-                  slideIn(const GalleryScreen()));
+              Navigator.push(context, slideIn(const GalleryScreen()));
             },
           ),
           ListTile(
@@ -53,11 +53,26 @@ class DrawerMenu extends StatelessWidget {
             leading: const Icon(
               Icons.question_mark,
             ),
-            title: const MenuText('Tutorial'),
+            title: const MenuText('Tips'),
             onTap: () {
               Navigator.pop(context);
               ShowCaseWidget.of(context).startShowCase(globalKeys);
             },
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.video_camera_back_outlined,
+            ),
+            title: const MenuText('Tutorial'),
+            onTap: () => showInfoDialog(
+              context,
+              title: "How to use the app?",
+              content: "Are you sure?",
+              titleBgColor: logoBgColour,
+              titleFontColor: logoFontColour,
+              includePicture: true,
+              picture: Image.asset("images/thumbnail.png"),
+            ),
           ),
           ListTile(
             leading: const Icon(

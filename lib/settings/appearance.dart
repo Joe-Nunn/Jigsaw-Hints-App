@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/ui/app_bar.dart';
+import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/main/main.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
