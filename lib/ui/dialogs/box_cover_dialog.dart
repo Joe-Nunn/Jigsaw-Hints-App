@@ -59,10 +59,10 @@ Widget getContent(BuildContext context, BoxCoverProvider boxCoverProvider) {
           onPressed: () {
             Navigator.push(context, slideIn(const GalleryScreen()));
           }, // Callback for onTap event
-          duration: 100, // Animaton duration, default is 70 Milliseconds
-          height: 60, // Button Height, default is 64
-          width: 150, // Button width, default is 200
-          color: Colors.blue,
+          duration: 100, // Animaton duration
+          height: 60, // Button Height
+          width: 150, // Button width
+          color: themeLightBlue,
           child: Text(
             "Select box cover",
             style: Theme.of(context).textTheme.labelMedium?.copyWith(

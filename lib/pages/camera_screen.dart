@@ -175,15 +175,11 @@ class _CameraScreenState extends State<CameraScreen> {
                       onPressed: () async {
                         // Ensure that the camera is initialized.
                         await _initializeControllerFuture;
-                        // Attempt to take a picture and get the file `image`
+                        // Attempt to take a picture and get the file
                         var xFile = await _controller.takePicture();
                         var path = xFile.path;
                         if (!mounted) return;
-                        setState(() {
-                          Provider.of<ImagesProvider>(context, listen: false)
-                              .capturedImages
-                              .add(File(path));
-                        });
+                        // If the picture was taken, display it in a popup.
                         showDialog(
                             context: context,
                             builder: (_) => imageDialog(context, path));

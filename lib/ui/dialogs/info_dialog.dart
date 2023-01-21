@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 void showInfoDialog(BuildContext context,
     {String title = "Title",
@@ -80,6 +82,10 @@ Widget imageDialog(BuildContext context, String path) {
               ),
               IconButton(
                 onPressed: () {
+                  // Add image to provider
+                  Provider.of<ImagesProvider>(context, listen: false)
+                      .capturedImages
+                      .add(File(path));
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.check_rounded),
