@@ -7,40 +7,41 @@ import 'package:provider/provider.dart';
 import 'package:animated_button/animated_button.dart';
 
 void showSelectedBoxCoverDialog(BuildContext context) {
-  var boxCoverProvider = Provider.of<BoxCoverProvider>(context, listen: false);
-  Color titleBgColor =
-      boxCoverProvider.boxCover == null ? Colors.red : Colors.green;
-  String titleText = boxCoverProvider.boxCover == null
-      ? "No box cover selected"
-      : "Selected box cover";
-
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: Container(
-          padding: const EdgeInsets.all(defaultDialogPadding),
-          decoration: BoxDecoration(
-            color: titleBgColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0),
+      return Consumer<BoxCoverProvider>(builder: (context, box, child) {
+        return AlertDialog(
+          title: Container(
+            padding: const EdgeInsets.all(defaultDialogPadding),
+            decoration: BoxDecoration(
+              color: box.boxCover == null ? Colors.red : Colors.green,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10.0),
+                topRight: Radius.circular(10.0),
+              ),
+            ),
+            child: Center(
+              child: Text(
+                box.boxCover == null
+                    ? "No box cover selected"
+                    : "Selected box cover",
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-          child: Center(
-            child: Text(titleText,
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+          titlePadding: const EdgeInsets.all(0),
+          content: getContent(context, box),
+          actions: getActions(context),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(defaultDialogBorderRadius),
+            ),
           ),
-        ),
-        titlePadding: const EdgeInsets.all(0),
-        content: getContent(context, boxCoverProvider),
-        actions: getActions(context),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
-        shape: const RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.all(Radius.circular(defaultDialogBorderRadius))),
-      );
+        );
+      });
     },
   );
 }

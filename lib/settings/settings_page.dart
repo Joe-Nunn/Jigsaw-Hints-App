@@ -150,10 +150,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-
-class Setting {
-  final String name;
-  int value;
-
-  Setting({this.name = "Default Name", this.value = 0});
-}

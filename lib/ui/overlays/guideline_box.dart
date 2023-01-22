@@ -16,8 +16,8 @@ class GuidelineBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color boxColor = _mode == CameraMode.piece
-        ? Theme.of(context).colorScheme.secondary
-        : Theme.of(context).colorScheme.tertiary;
+        ? Theme.of(context).colorScheme.tertiary
+        : Theme.of(context).colorScheme.secondary;
     return Positioned(
       left: _position['x'],
       top: _position['y'],

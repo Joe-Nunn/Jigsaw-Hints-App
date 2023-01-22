@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
-import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/ui/dialogs/box_cover_dialog.dart';
@@ -85,20 +83,17 @@ class _CameraScreenState extends State<CameraScreen> {
         MediaQuery.of(context).size.width / 2 - desiredPieceSize / 2;
     _position['y'] = MediaQuery.of(context).size.height / 2 - desiredPieceSize;
 
-    return Consumer<CameraModeProvider>(
-      builder: (context, cameraMode, child) {
-        var boxCoverProvider =
-            Provider.of<BoxCoverProvider>(context, listen: true);
-        cameraMode.mode = boxCoverProvider.boxCover == null
-            ? CameraMode.box
-            : CameraMode.piece;
+    return Consumer2<CameraModeProvider, BoxCoverProvider>(
+      builder: (context, cameraMode, box, child) {
+        cameraMode.mode =
+            box.boxCover == null ? CameraMode.box : CameraMode.piece;
         return ShowCaseWidget(
           builder: Builder(
             builder: (context) {
               return SafeArea(
                 child: Scaffold(
                   key: _key,
-                  appBar: const JigsawAppBar(title: "Jigsaw Hints"),
+                  appBar: const JigsawAppBar(title: "Camera"),
                   drawer: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.75,
                     child: DrawerMenu(
@@ -112,7 +107,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   backgroundColor: Colors.black,
                   body: Stack(
                     children: [
-                      body(context, showcaseKeys),
+                      body(context, showcaseKeys, cameraMode),
                       GuidelineBox(position: _position, mode: cameraMode.mode),
                     ],
                   ),
@@ -125,7 +120,8 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Widget body(BuildContext context, List<GlobalKey> keys) {
+  Widget body(
+      BuildContext context, List<GlobalKey> keys, CameraModeProvider camera) {
     return Consumer<BoxCoverProvider>(builder: (context, box, child) {
       return Column(
         children: [
@@ -146,27 +142,7 @@ class _CameraScreenState extends State<CameraScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Stack(
               children: [
-                Positioned(
-                  left: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: defaultMediumContentPadding),
-                    child: Showcase(
-                      key: keys.elementAt(0),
-                      description: 'Select the box cover to work with',
-                      child: IconButton(
-                        onPressed: () => showSelectedBoxCoverDialog(context),
-                        icon: Icon(
-                          Icons.settings_system_daydream,
-                          color: box.boxCover == null
-                              ? Colors.white
-                              : Colors.green,
-                          size: defaultIconSize,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                boxCoverButton(keys, context, box),
                 Align(
                   child: Showcase(
                     key: keys.elementAt(1),
@@ -180,9 +156,11 @@ class _CameraScreenState extends State<CameraScreen> {
                         var path = xFile.path;
                         if (!mounted) return;
                         // If the picture was taken, display it in a popup.
-                        showDialog(
-                            context: context,
-                            builder: (_) => imageDialog(context, path));
+                        if (camera.mode == CameraMode.box) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => imageDialog(context, path));
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
@@ -193,32 +171,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        right: defaultMediumContentPadding),
-                    child: Showcase(
-                      key: keys.elementAt(2),
-                      description: 'Turn camera flash ON or OFF',
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.flash_on,
-                          color: flashlightOn ? Colors.yellow : Colors.white,
-                          size: defaultIconSize,
-                        ),
-                        onPressed: () {
-                          flashlightOn
-                              ? _controller.setFlashMode(FlashMode.off)
-                              : _controller.setFlashMode(FlashMode.always);
-                          setState(() {
-                            flashlightOn = !flashlightOn;
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ),
+                flashButton(keys),
               ],
             ),
           ),
@@ -226,5 +179,55 @@ class _CameraScreenState extends State<CameraScreen> {
         ],
       );
     });
+  }
+
+  Positioned flashButton(List<GlobalKey<State<StatefulWidget>>> keys) {
+    return Positioned(
+      right: 0,
+      child: Padding(
+        padding: const EdgeInsets.only(right: defaultMediumContentPadding),
+        child: Showcase(
+          key: keys.elementAt(2),
+          description: 'Turn camera flash ON or OFF',
+          child: IconButton(
+            icon: Icon(
+              Icons.flash_on,
+              color: flashlightOn ? Colors.yellow : Colors.white,
+              size: defaultIconSize,
+            ),
+            onPressed: () {
+              flashlightOn
+                  ? _controller.setFlashMode(FlashMode.off)
+                  : _controller.setFlashMode(FlashMode.always);
+              setState(() {
+                flashlightOn = !flashlightOn;
+              });
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Positioned boxCoverButton(List<GlobalKey<State<StatefulWidget>>> keys,
+      BuildContext context, BoxCoverProvider box) {
+    return Positioned(
+      left: 0,
+      child: Padding(
+        padding: const EdgeInsets.only(left: defaultMediumContentPadding),
+        child: Showcase(
+          key: keys.elementAt(0),
+          description: 'Select the box cover to work with',
+          child: IconButton(
+            onPressed: () => showSelectedBoxCoverDialog(context),
+            icon: Icon(
+              Icons.settings_system_daydream,
+              color: box.boxCover == null ? Colors.white : Colors.green,
+              size: defaultIconSize,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
