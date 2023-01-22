@@ -47,29 +47,13 @@ class _AboutSettingsState extends State<AboutSettings> {
                 titleBgColor: Colors.redAccent,
                 rightButton: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: yesButton(context),
+                  child: popButton(context, text: "Yes", onPressed: () {
+                    resetUserData();
+                    Navigator.of(context).pop();
+                  }),
                 ),
-                leftButton: noButton(context))),
+                leftButton: popButton(context, text: "No"))),
       ];
-
-  Widget yesButton(BuildContext context) {
-    return TextButton(
-      child: Text("Yes", style: Theme.of(context).textTheme.labelMedium),
-      onPressed: () {
-        resetUserData();
-        Navigator.of(context).pop();
-      },
-    );
-  }
-
-  Widget noButton(BuildContext context) {
-    return TextButton(
-      child: Text("No", style: Theme.of(context).textTheme.labelMedium),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-  }
 
   resetUserData() async {
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();

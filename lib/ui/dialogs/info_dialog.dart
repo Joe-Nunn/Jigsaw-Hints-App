@@ -28,7 +28,7 @@ void showInfoDialog(BuildContext context,
         )
       : Text(
           content,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyLarge,
         );
 
   showDialog(
@@ -47,7 +47,10 @@ void showInfoDialog(BuildContext context,
           child: Center(
             child: Text(title,
                 style: TextStyle(
-                    color: titleFontColor, fontWeight: FontWeight.bold)),
+                    color: titleFontColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize:
+                        Theme.of(context).textTheme.labelMedium!.fontSize)),
           ),
         ),
         titlePadding: const EdgeInsets.all(0),
@@ -108,9 +111,9 @@ Widget imageDialog(BuildContext context, String path) {
 }
 
 Widget popButton(BuildContext context,
-    {String text = "Ok", Color? color, VoidCallback? voidCallback}) {
+    {String text = "Ok", Color? color, VoidCallback? onPressed}) {
   return TextButton(
-    onPressed: voidCallback ?? () => Navigator.of(context).pop(),
+    onPressed: onPressed ?? () => Navigator.of(context).pop(),
     child: Text(text,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
   );

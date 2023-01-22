@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Jigsaw Puzzle Solver',
       theme: ThemeData(
+          fontFamily: 'Rubik',
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: constants.primaryColour,
             secondary: constants.secondaryColour,
@@ -58,6 +59,7 @@ class _MyAppState extends State<MyApp> {
             labelMedium: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
             titleMedium: TextStyle(fontSize: 20, fontFamily: 'Rubik'),
             bodyMedium: TextStyle(fontSize: 16, fontFamily: 'Rubik'),
+            bodyLarge: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
           ),
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,

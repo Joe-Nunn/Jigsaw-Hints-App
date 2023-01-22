@@ -84,7 +84,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                   selected: selectedPictureIndex ==
                       images.capturedImages.indexOf(image) + 1))
               .toList(),
-        ),
+        ).animate().fadeIn(duration: 500.ms).then().shimmer(),
         if (selectedPictureIndex != 0)
           Align(
               alignment: Alignment.bottomCenter,
@@ -103,7 +103,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
         borderRadius: 15,
         onPressed: () => usePicture(
             images.capturedImages.elementAt(selectedPictureIndex - 1), box),
-        child: const Text('Use this box cover'),
+        child: Text(
+          'Use this box cover',
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: Colors.white,
+              ),
+        ),
       ).animate().flip(),
     );
   }
