@@ -8,7 +8,6 @@ class CameraModeProvider extends ChangeNotifier {
   set mode(CameraMode mode) {
     if (mode != _mode) {
       _mode = mode;
-      notifyListeners();
     }
   }
 }

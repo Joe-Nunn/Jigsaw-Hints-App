@@ -14,6 +14,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
+  // Ensure the SharedPreferences are initialized
+  final sharedPrefs = await SharedPreferences.getInstance();
   runApp(MultiProvider(providers: [
     Provider<SharedPreferencesProvider?>(
         create: (_) =>
@@ -21,7 +23,7 @@ void main() async {
     StreamProvider(
         create: (context) =>
             context.read<SharedPreferencesProvider>().prefsState,
-        initialData: null),
+        initialData: sharedPrefs),
     ChangeNotifierProvider(create: (context) => CameraModeProvider()),
     ChangeNotifierProvider(create: (context) => ImagesProvider()),
     ChangeNotifierProvider(create: (context) => BoxCoverProvider()),
