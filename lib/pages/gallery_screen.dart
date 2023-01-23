@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
+import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -32,10 +33,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   void usePicture(File image, BoxCoverProvider boxCover) async {
     allowPop = false;
-    Timer(const Duration(seconds: 2), () {
-      allowPop = true;
+    Timer(const Duration(milliseconds: 1500), () {
       boxCover.boxCover = image;
       selectButtonController.success();
+      Timer(const Duration(seconds: 1), () {
+        Navigator.pop(context);
+      });
     });
   }
 
@@ -49,28 +52,63 @@ class _GalleryScreenState extends State<GalleryScreen> {
           return Future.value(false);
         }
       },
-      child: Consumer<ImagesProvider>(builder: (context, images, child) {
+      child: Consumer2<ImagesProvider, BoxCoverProvider>(
+          builder: (context, images, box, child) {
         return Scaffold(
-          appBar: const JigsawAppBar(
-            title: "Saved Boxes",
-          ),
-          body: GestureDetector(
-              onTap: () => setState(() => selectedPictureIndex = 0),
-              child: body(context, images)),
-        );
+            appBar: const JigsawAppBar(
+              title: "Box Covers",
+            ),
+            body: GestureDetector(
+                onTap: () => setState(() => selectedPictureIndex = 0),
+                child: body(context, images, box)),
+            floatingActionButton: selectedPictureIndex == 0
+                ? Padding(
+                    padding: const EdgeInsets.all(defaultBigContentPadding),
+                    child: FloatingActionButton.extended(
+                      backgroundColor: Colors.grey[400],
+                      onPressed: () {
+                        if (box.boxCover == null) {
+                          Navigator.of(context)
+                              .popUntil(ModalRoute.withName('/'));
+                        } else {
+                          showInfoDialog(
+                            context,
+                            title: "Before you continue...",
+                            content:
+                                "Be aware that this will unselect current box cover. Are you sure?",
+                            titleBgColor: Colors.redAccent,
+                            rightButton: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: popButton(context, text: "Yes",
+                                  onPressed: () {
+                                box.boxCover = null;
+                                Navigator.of(context)
+                                    .popUntil(ModalRoute.withName('/'));
+                              }),
+                            ),
+                            leftButton: popButton(context, text: "No"),
+                          );
+                        }
+                      },
+                      label: const Text("Add New Box Cover"),
+                    ).animate().fade(),
+                  )
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat);
       }),
     );
   }
 
-  Widget body(context, ImagesProvider images) {
+  Widget body(context, ImagesProvider images, BoxCoverProvider box) {
     return images.capturedImages.isEmpty
         ? emptyGallery(context)
-        : selectableGallery(images);
+        : selectableGallery(images, box);
   }
 
-  Widget selectableGallery(ImagesProvider images) {
-    return Consumer<BoxCoverProvider>(builder: (context, box, child) {
-      return Stack(children: [
+  Widget selectableGallery(ImagesProvider images, BoxCoverProvider box) {
+    return Stack(
+      children: [
         GridView.count(
           padding: const EdgeInsets.only(bottom: 100),
           crossAxisCount: 3,
@@ -87,16 +125,18 @@ class _GalleryScreenState extends State<GalleryScreen> {
         ).animate().fadeIn(duration: 500.ms).then().shimmer(),
         if (selectedPictureIndex != 0)
           Align(
-              alignment: Alignment.bottomCenter,
-              heightFactor: 13,
-              child: usePictureButton(images, box)),
-      ]);
-    });
+            alignment: Alignment.bottomCenter,
+            heightFactor: 13,
+            child: usePictureButton(images, box),
+          ),
+      ],
+    );
   }
 
   Widget usePictureButton(ImagesProvider images, BoxCoverProvider box) {
     return Animate(
       child: RoundedLoadingButton(
+        successIcon: Icons.extension,
         controller: selectButtonController,
         color: themeLightBlue,
         successColor: Colors.green,
@@ -104,7 +144,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
         onPressed: () => usePicture(
             images.capturedImages.elementAt(selectedPictureIndex - 1), box),
         child: Text(
-          'Use this box cover',
+          'Use This Box Cover',
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 color: Colors.white,
               ),
@@ -134,18 +174,18 @@ class _GalleryScreenState extends State<GalleryScreen> {
                 Icons.info_outline,
                 color: Colors.blue,
                 size: defaultIconSize,
-              ),
+              ).animate().flipH(duration: 1.seconds),
               const SizedBox(width: defaultSmallWhitespace),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.5,
                 child: Text(
-                  "Go ahead a take your first picture of the jigsaw box,   it will be show up here. 📷",
+                  "Go ahead a take your first picture of the jigsaw box, it will be show up here. 📷",
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
                       ?.copyWith(backgroundColor: Colors.grey[200]),
                 ),
-              ),
+              ).animate(delay: 1.seconds).fadeIn(duration: 2.seconds),
             ],
           ),
         ],

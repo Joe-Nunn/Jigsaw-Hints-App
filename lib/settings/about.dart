@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
+import 'package:jigsaw_hints/utils/app_version.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:jigsaw_hints/main/main.dart';
@@ -33,7 +34,7 @@ class _AboutSettingsState extends State<AboutSettings> {
             ),
             title: const Text('App Version'),
             subtitle: const Text('Installed version'),
-            trailing: const Text('1.0.0'),
+            trailing: const Text(currentJigsawHintsVersion),
             onTap: () => {}),
         ListTile(
             leading: const Icon(

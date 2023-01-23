@@ -219,7 +219,7 @@ class _CameraScreenState extends State<CameraScreen> {
           key: keys.elementAt(0),
           description: 'Select the box cover to work with',
           child: IconButton(
-            onPressed: () => showSelectedBoxCoverDialog(context),
+            onPressed: () => showBoxCoverDialog(context, keys.elementAt(1)),
             icon: Icon(
               Icons.settings_system_daydream,
               color: box.boxCover == null ? Colors.white : Colors.green,

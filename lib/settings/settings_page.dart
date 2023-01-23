@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/settings/about.dart';
 import 'package:jigsaw_hints/settings/accessibility.dart';
 import 'package:jigsaw_hints/settings/appearance.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/general.dart';
-import 'package:jigsaw_hints/settings/input_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/input_dialog.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -40,9 +39,12 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           Padding(
             padding: const EdgeInsets.all(defaultAppBarPadding),
-            child: Text(
-              "Settings",
-              style: Theme.of(context).textTheme.titleMedium,
+            child: Opacity(
+              opacity: 0.5,
+              child: Text(
+                "Settings",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
           ),
         ],

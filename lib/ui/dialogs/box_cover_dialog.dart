@@ -1,16 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:jigsaw_hints/pages/gallery_screen.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
+import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/ui/animations/animations.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_button/animated_button.dart';
 
-void showSelectedBoxCoverDialog(BuildContext context) {
+void showBoxCoverDialog(BuildContext context, GlobalKey cameraKey) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -37,7 +36,7 @@ void showSelectedBoxCoverDialog(BuildContext context) {
           ),
           titlePadding: const EdgeInsets.all(0),
           content: getContent(context, box),
-          actions: getActions(context),
+          actions: getActions(context, cameraKey, box),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
@@ -78,30 +77,6 @@ Column boxSelectedContent(
                   .then(delay: 5000.ms),
             ),
           ),
-          Positioned(
-            right: 0,
-            top: 0,
-            child: IconButton(
-              icon: const Icon(
-                Icons.cancel_outlined,
-                color: themeLightRed,
-              ),
-              onPressed: () => showInfoDialog(
-                context,
-                title: "Resetting box cover",
-                content: "Are you sure?",
-                titleBgColor: Colors.redAccent,
-                rightButton: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: popButton(context, text: "Yes", onPressed: () {
-                    boxCoverProvider.boxCover = null;
-                    Navigator.pop(context);
-                  }),
-                ),
-                leftButton: popButton(context, text: "No"),
-              ),
-            ),
-          )
         ],
       ),
       const SizedBox(
@@ -109,7 +84,6 @@ Column boxSelectedContent(
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             children: const [Text("📡 Server: Connected "), Icon(Icons.wifi)],
@@ -144,6 +118,7 @@ Column boxSelectedContent(
 }
 
 Column boxNotSelectedContent(BuildContext context) {
+  ImagesProvider imagesProvider = Provider.of<ImagesProvider>(context);
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: [
@@ -154,25 +129,59 @@ Column boxNotSelectedContent(BuildContext context) {
             .animate()
             .shake(duration: 500.ms),
       ),
-      AnimatedButton(
-        onPressed: () {
-          Navigator.push(context, slideIn(const GalleryScreen()));
-        }, // Callback for onTap event
-        duration: 100, // Animaton duration
-        height: 60, // Button Height
-        width: 150, // Button width
-        color: themeLightBlue,
-        child: Text(
-          "Select box cover",
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: Colors.white,
+      imagesProvider.capturedImages.isEmpty
+          ? AnimatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              }, // Callback for onTap event
+              duration: 100, // Animaton duration
+              height: 60, // Button Height
+              width: 160, // Button width
+              color: Colors.blue,
+              child: Text(
+                "Take picture",
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Colors.white,
+                    ),
               ),
-        ),
-      ).animate(delay: 500.ms).scale()
+            ).animate(delay: 500.ms).scale()
+          : AnimatedButton(
+              onPressed: () {
+                Navigator.push(context, slideIn(const GalleryScreen()));
+              }, // Callback for onTap event
+              duration: 100, // Animaton duration
+              height: 60, // Button Height
+              width: 200, // Button width
+              color: themeLightBlue,
+              child: Text(
+                "Select box cover",
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
+            ).animate(delay: 500.ms).scale()
     ],
   );
 }
 
-List<Widget> getActions(BuildContext context) {
-  return <Widget>[Container(), Container()];
+List<Widget> getActions(BuildContext context, GlobalKey cameraKey,
+    BoxCoverProvider boxCoverProvider) {
+  return boxCoverProvider.boxCover == null
+      ? [Container(), Container()]
+      : [
+          popButton(context,
+              text: "Remove ❌",
+              onPressed: () => showInfoDialog(
+                    context,
+                    title: "Resetting box cover",
+                    content: "Are you sure?",
+                    titleBgColor: Colors.redAccent,
+                    rightButton: popButton(context, text: "Yes", onPressed: () {
+                      boxCoverProvider.boxCover = null;
+                      Navigator.pop(context);
+                    }),
+                    leftButton: popButton(context, text: "No"),
+                  )),
+          popButton(context),
+        ];
 }

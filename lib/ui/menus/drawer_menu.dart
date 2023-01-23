@@ -35,7 +35,7 @@ class DrawerMenu extends StatelessWidget {
             leading: const Icon(
               Icons.photo_album,
             ),
-            title: const MenuText('Saved Boxes'),
+            title: const MenuText('Box Covers'),
             onTap: () {
               Navigator.push(context, slideIn(const GalleryScreen()));
             },
