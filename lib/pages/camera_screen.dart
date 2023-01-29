@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
+import 'package:jigsaw_hints/ui/dialogs/jigsaw_piece_dialog.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/ui/dialogs/box_cover_dialog.dart';
@@ -139,7 +140,7 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
           const Spacer(),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             child: Stack(
               children: [
                 boxCoverButton(keys, context, box),
@@ -160,6 +161,13 @@ class _CameraScreenState extends State<CameraScreen> {
                           showDialog(
                               context: context,
                               builder: (_) => imageDialog(context, path));
+                        } else if (camera.mode == CameraMode.piece) {
+                          // Send image to the server
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => JigsawPieceDialog(imagePath: path),
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -185,7 +193,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return Positioned(
       right: 0,
       child: Padding(
-        padding: const EdgeInsets.only(right: defaultMediumContentPadding),
+        padding: const EdgeInsets.only(right: defaultContentPaddingMedium),
         child: Showcase(
           key: keys.elementAt(2),
           description: 'Turn camera flash ON or OFF',
@@ -214,12 +222,12 @@ class _CameraScreenState extends State<CameraScreen> {
     return Positioned(
       left: 0,
       child: Padding(
-        padding: const EdgeInsets.only(left: defaultMediumContentPadding),
+        padding: const EdgeInsets.only(left: defaultContentPaddingMedium),
         child: Showcase(
           key: keys.elementAt(0),
           description: 'Select the box cover to work with',
           child: IconButton(
-            onPressed: () => showBoxCoverDialog(context, keys.elementAt(1)),
+            onPressed: () => showBoxCoverDialog(context),
             icon: Icon(
               Icons.settings_system_daydream,
               color: box.boxCover == null ? Colors.white : Colors.green,
