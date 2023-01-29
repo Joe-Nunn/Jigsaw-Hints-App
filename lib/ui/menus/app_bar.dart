@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'constants.dart';
+import '../../utils/constants.dart';
 
 class JigsawAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
@@ -15,9 +15,12 @@ class JigsawAppBar extends StatelessWidget with PreferredSizeWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.all(defaultAppBarPadding),
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleMedium,
+          child: Opacity(
+            opacity: 0.5,
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
         ),
       ],

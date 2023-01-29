@@ -1,20 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/constants.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/settings/about.dart';
 import 'package:jigsaw_hints/settings/accessibility.dart';
 import 'package:jigsaw_hints/settings/appearance.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/general.dart';
-import 'package:jigsaw_hints/settings/input_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/input_dialog.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../app_bar.dart';
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
-
-import '../info_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -24,11 +21,11 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  late SharedPreferences? sharedPrefs;
+  late SharedPreferences sharedPrefs;
 
   @override
   Widget build(BuildContext context) {
-    sharedPrefs = context.watch<SharedPreferences?>();
+    sharedPrefs = context.watch<SharedPreferences>();
 
     return Scaffold(
       appBar: AppBar(
@@ -42,9 +39,12 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           Padding(
             padding: const EdgeInsets.all(defaultAppBarPadding),
-            child: Text(
-              "Settings",
-              style: Theme.of(context).textTheme.titleMedium,
+            child: Opacity(
+              opacity: 0.5,
+              child: Text(
+                "Settings",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
           ),
         ],
@@ -55,108 +55,100 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Colors.transparent,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(defaultContentPadding),
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
         child: settingTiles(),
       ),
     );
   }
 
   Widget settingTiles() {
-    var userName = sharedPrefs?.getString(userNameKey) ?? defaultUserName;
+    var userName = sharedPrefs.getString(userNameKey) ?? defaultUserName;
     return Padding(
-      padding: const EdgeInsets.all(defaultContentPadding),
-      child: ListView(
-        children: [
-          // User card
-          SmallUserCard(
-            cardColor: const Color.fromARGB(255, 95, 170, 231),
-            userName: userName,
-            userProfilePic: const AssetImage("images/user_avatar.png"),
-            onTap: () => showDialog(
-                    context: context,
-                    builder: ((context) => inputDialogText(
-                        context, sharedPrefs, userNameKey,
-                        titleText: "Enter your name")))
-                .then((_) => setState(() {})),
-          ),
-          SettingsGroup(
-            items: [
-              SettingsItem(
-                onTap: () => Navigator.push(
-                    context,
-                    PageTransition(
-                        child: const GeneralSettings(),
-                        type: PageTransitionType.fade)),
-                icons: CupertinoIcons.settings,
-                iconStyle: IconStyle(backgroundColor: Colors.amber),
-                title: 'General',
-                subtitle: "Hint accuracy and more",
-              ),
-              SettingsItem(
-                onTap: () => Navigator.push(
-                    context,
-                    PageTransition(
-                        child: const AppearanceSettings(),
-                        type: PageTransitionType.fade)),
-                icons: CupertinoIcons.pencil_outline,
-                iconStyle: IconStyle(),
-                title: 'Appearance',
-                subtitle: "Make the app yours",
-              ),
-            ],
-          ),
-          SettingsGroup(
-            items: [
-              SettingsItem(
-                onTap: () => Navigator.push(
-                    context,
-                    PageTransition(
-                        child: const AccessibilitySettings(),
-                        type: PageTransitionType.fade)),
-                icons: Icons.accessibility_new,
-                iconStyle: IconStyle(
-                  backgroundColor: Colors.indigo,
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
+        child: ListView(
+          children: [
+            // User card
+            SmallUserCard(
+              cardColor: const Color.fromARGB(255, 95, 170, 231),
+              userName: userName,
+              userProfilePic: const AssetImage("images/user_avatar.png"),
+              onTap: () => showDialog(
+                      context: context,
+                      builder: ((context) => inputDialogText(
+                          context, sharedPrefs, userNameKey,
+                          titleText: "Enter your name")))
+                  .then((_) => setState(() {})),
+            ),
+            SettingsGroup(
+              items: [
+                SettingsItem(
+                  onTap: () => Navigator.push(
+                      context,
+                      PageTransition(
+                          child: const GeneralSettings(),
+                          type: PageTransitionType.fade)),
+                  icons: CupertinoIcons.settings,
+                  iconStyle: IconStyle(backgroundColor: Colors.amber),
+                  title: 'General',
+                  subtitle: "Hint accuracy and more",
                 ),
-                title: 'Accessibility',
-                subtitle: "Configure to your needs",
-              ),
-              SettingsItem(
-                onTap: () => Navigator.push(
-                    context,
-                    PageTransition(
-                        child: const AboutSettings(),
-                        type: PageTransitionType.fade)),
-                icons: Icons.info_rounded,
-                iconStyle: IconStyle(
-                  backgroundColor: Colors.purple,
+                SettingsItem(
+                  onTap: () => Navigator.push(
+                      context,
+                      PageTransition(
+                          child: const AppearanceSettings(),
+                          type: PageTransitionType.fade)),
+                  icons: CupertinoIcons.pencil_outline,
+                  iconStyle: IconStyle(),
+                  title: 'Appearance',
+                  subtitle: "Make the app yours",
                 ),
-                title: 'About',
-                subtitle: "Learn more about the App",
-              ),
-              SettingsItem(
-                onTap: () => showDialog(
-                    context: context,
-                    builder: ((context) =>
-                        inputDialogTextBox(titleText: "Feedback Form"))),
-                icons: Icons.mail,
-                iconStyle: IconStyle(
-                  backgroundColor: const Color.fromARGB(255, 175, 175, 175),
+              ],
+            ),
+            SettingsGroup(
+              items: [
+                SettingsItem(
+                  onTap: () => Navigator.push(
+                      context,
+                      PageTransition(
+                          child: const AccessibilitySettings(),
+                          type: PageTransitionType.fade)),
+                  icons: Icons.accessibility_new,
+                  iconStyle: IconStyle(
+                    backgroundColor: Colors.indigo,
+                  ),
+                  title: 'Accessibility',
+                  subtitle: "Configure to your needs",
                 ),
-                title: 'Send Feedback',
-                subtitle: "Help us improve the App",
-              ),
-            ],
-          ),
-          // You can add a settings title
-        ],
-      ),
-    );
+                SettingsItem(
+                  onTap: () => Navigator.push(
+                          context,
+                          PageTransition(
+                              child: const AboutSettings(),
+                              type: PageTransitionType.fade))
+                      .then((_) => setState(() {})),
+                  icons: Icons.info_rounded,
+                  iconStyle: IconStyle(
+                    backgroundColor: Colors.purple,
+                  ),
+                  title: 'About',
+                  subtitle: "Learn more about the App",
+                ),
+                SettingsItem(
+                  onTap: () => showDialog(
+                      context: context,
+                      builder: ((context) =>
+                          inputDialogTextBox(titleText: "Feedback Form"))),
+                  icons: Icons.mail,
+                  iconStyle: IconStyle(
+                    backgroundColor: const Color.fromARGB(255, 175, 175, 175),
+                  ),
+                  title: 'Send Feedback',
+                  subtitle: "Help us improve the App",
+                ),
+              ],
+            ),
+          ],
+        ));
   }
-}
-
-class Setting {
-  final String name;
-  int value;
-
-  Setting({this.name = "Default Name", this.value = 0});
 }

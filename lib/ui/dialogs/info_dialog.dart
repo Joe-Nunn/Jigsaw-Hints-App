@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/constants.dart';
-
-import 'camera_screen.dart';
-import 'drawer_menu.dart';
-import 'gallery_screen.dart';
+import 'package:jigsaw_hints/provider/images.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 void showInfoDialog(BuildContext context,
     {String title = "Title",
@@ -30,7 +28,7 @@ void showInfoDialog(BuildContext context,
         )
       : Text(
           content,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyLarge,
         );
 
   showDialog(
@@ -42,14 +40,17 @@ void showInfoDialog(BuildContext context,
           decoration: BoxDecoration(
             color: titleBgColor,
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0),
+              topLeft: Radius.circular(defaultDialogBorderRadiusSmall),
+              topRight: Radius.circular(defaultDialogBorderRadiusSmall),
             ),
           ),
           child: Center(
             child: Text(title,
                 style: TextStyle(
-                    color: titleFontColor, fontWeight: FontWeight.bold)),
+                    color: titleFontColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize:
+                        Theme.of(context).textTheme.labelMedium?.fontSize)),
           ),
         ),
         titlePadding: const EdgeInsets.all(0),
@@ -57,8 +58,8 @@ void showInfoDialog(BuildContext context,
         actions: actions,
         actionsAlignment: MainAxisAlignment.spaceBetween,
         shape: const RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.all(Radius.circular(defaultDialogBorderRadius))),
+            borderRadius: BorderRadius.all(
+                Radius.circular(defaultDialogBorderRadiusBig))),
       );
     },
   );
@@ -84,16 +85,11 @@ Widget imageDialog(BuildContext context, String path) {
               ),
               IconButton(
                 onPressed: () {
+                  // Add image to provider
+                  Provider.of<ImagesProvider>(context, listen: false)
+                      .capturedImages
+                      .add(File(path));
                   Navigator.of(context).pop();
-                  showInfoDialog(context,
-                      title: "Select a box picture",
-                      leftButton: goToGalleryButton(context, "Saved Boxes",
-                          Theme.of(context).colorScheme.tertiary),
-                      rightButton: popButton(context,
-                          text: "Take Photo",
-                          color: Theme.of(context).colorScheme.tertiary),
-                      includePicture: true,
-                      picture: Image.asset("images/jigsaw_box.png"));
                 },
                 icon: const Icon(Icons.check_rounded),
                 color: Colors.green,
@@ -114,23 +110,11 @@ Widget imageDialog(BuildContext context, String path) {
   );
 }
 
-Widget popButton(BuildContext context, {String text = "Ok", Color? color}) {
+Widget popButton(BuildContext context,
+    {String text = "Ok", Color? color, VoidCallback? onPressed}) {
   return TextButton(
+    onPressed: onPressed ?? () => Navigator.of(context).pop(),
     child: Text(text,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
-  );
-}
-
-Widget goToGalleryButton(BuildContext context, String text, Color color) {
-  return TextButton(
-    child: Text(text,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color)),
-    onPressed: () {
-      Navigator.push(
-          context, slideIn(GalleryScreen(images: CameraScreen.capturedImages)));
-    },
   );
 }

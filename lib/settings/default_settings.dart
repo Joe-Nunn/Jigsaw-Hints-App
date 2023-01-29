@@ -1,3 +1,17 @@
 const String defaultUserName = "Your Name";
-const int defaultHintAccuracy = 1;
+const int defaultHintAccuracy = 100;
 const bool defaultDarkMode = false;
+const int defaultAlgorithmCorrectness = 2;
+const int defaultFontSize = 1;
+
+enum FontSize {
+  small,
+  medium,
+  large,
+}
+
+enum AlgorithmCorrectness {
+  low,
+  mean,
+  max,
+}

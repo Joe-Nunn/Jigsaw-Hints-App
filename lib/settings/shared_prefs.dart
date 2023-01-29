@@ -11,3 +11,5 @@ class SharedPreferencesProvider {
 const String darkModeKey = "dark mode";
 const String userNameKey = "user name";
 const String hintAccuracyKey = "hint accuracy";
+const String algorithmCorrectnessKey = "algorithm correctness";
+const String fontSizeKey = "font size";

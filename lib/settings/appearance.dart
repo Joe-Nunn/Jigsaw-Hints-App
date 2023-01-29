@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/app_bar.dart';
-import 'package:jigsaw_hints/constants.dart';
-import 'package:jigsaw_hints/main.dart';
+import 'package:jigsaw_hints/ui/menus/app_bar.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
+import 'package:jigsaw_hints/main/main.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +28,7 @@ class _AppearanceSettingsState extends State<AppearanceSettings> {
         title: "Settings",
       ),
       body: ListView(
-        padding: const EdgeInsets.all(defaultContentPadding),
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
         children: settingsTiles,
       ),
     );

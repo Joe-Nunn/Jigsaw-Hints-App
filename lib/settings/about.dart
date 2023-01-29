@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:jigsaw_hints/app_bar.dart';
-import 'package:jigsaw_hints/constants.dart';
+import 'package:jigsaw_hints/ui/menus/app_bar.dart';
+import 'package:jigsaw_hints/utils/app_version.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
+import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
+import 'package:jigsaw_hints/main/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutSettings extends StatefulWidget {
   const AboutSettings({super.key});
@@ -19,7 +21,7 @@ class _AboutSettingsState extends State<AboutSettings> {
         title: "Settings",
       ),
       body: ListView(
-        padding: const EdgeInsets.all(defaultContentPadding),
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
         children: settingsTiles,
       ),
     );
@@ -32,7 +34,32 @@ class _AboutSettingsState extends State<AboutSettings> {
             ),
             title: const Text('App Version'),
             subtitle: const Text('Installed version'),
-            trailing: const Text('1.0.0'),
+            trailing: const Text(currentJigsawHintsVersion),
             onTap: () => {}),
+        ListTile(
+            leading: const Icon(
+              Icons.restart_alt_outlined,
+            ),
+            title: const Text('Reset Settings'),
+            subtitle: const Text('Set all settings back to default'),
+            onTap: () => showInfoDialog(context,
+                title: "Resetting all user settings",
+                content: "Are you sure?",
+                titleBgColor: Colors.redAccent,
+                rightButton: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: popButton(context, text: "Yes", onPressed: () {
+                    resetUserData();
+                    Navigator.of(context).pop();
+                  }),
+                ),
+                leftButton: popButton(context, text: "No"))),
       ];
+
+  resetUserData() async {
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    await sharedPrefs.clear();
+    if (!mounted) return;
+    MyApp.of(context).setState(() {});
+  }
 }

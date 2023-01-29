@@ -1,17 +1,21 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/provider/box_cover.dart';
+import 'package:jigsaw_hints/provider/camera_mode.dart';
+import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
-import 'package:jigsaw_hints/settings/user.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'camera_screen.dart';
-import 'constants.dart' as constants;
-import 'settings/shared_prefs.dart';
+import '../pages/camera_screen.dart';
+import '../utils/constants.dart' as constants;
+import '../settings/shared_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
+  // Ensure the SharedPreferences are initialized
+  final sharedPrefs = await SharedPreferences.getInstance();
   runApp(MultiProvider(providers: [
     Provider<SharedPreferencesProvider?>(
         create: (_) =>
@@ -19,8 +23,10 @@ void main() async {
     StreamProvider(
         create: (context) =>
             context.read<SharedPreferencesProvider>().prefsState,
-        initialData: null),
-    ChangeNotifierProvider(create: (context) => User()),
+        initialData: sharedPrefs),
+    ChangeNotifierProvider(create: (context) => CameraModeProvider()),
+    ChangeNotifierProvider(create: (context) => ImagesProvider()),
+    ChangeNotifierProvider(create: (context) => BoxCoverProvider()),
   ], child: MyApp(cameras: cameras)));
 }
 
@@ -43,6 +49,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Jigsaw Puzzle Solver',
       theme: ThemeData(
+          fontFamily: 'Rubik',
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: constants.primaryColour,
             secondary: constants.secondaryColour,
@@ -52,6 +59,7 @@ class _MyAppState extends State<MyApp> {
             labelMedium: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
             titleMedium: TextStyle(fontSize: 20, fontFamily: 'Rubik'),
             bodyMedium: TextStyle(fontSize: 16, fontFamily: 'Rubik'),
+            bodyLarge: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
           ),
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,
@@ -72,7 +80,13 @@ class _MyAppState extends State<MyApp> {
           ? ThemeMode.dark
           : ThemeMode.light,
       debugShowCheckedModeBanner: false,
-      home: CameraScreen(cameras: widget.cameras),
+      // Start the app with the "/" named route. In this case, the app starts
+      // on the FirstScreen widget.
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => CameraScreen(cameras: widget.cameras),
+      },
     );
   }
 }
