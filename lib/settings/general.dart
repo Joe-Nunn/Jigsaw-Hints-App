@@ -30,7 +30,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
         title: "Settings",
       ),
       body: ListView(
-        padding: const EdgeInsets.all(defaultBigContentPadding),
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
         children: settingsTiles,
       ),
     );

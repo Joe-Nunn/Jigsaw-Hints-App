@@ -40,8 +40,8 @@ void showInfoDialog(BuildContext context,
           decoration: BoxDecoration(
             color: titleBgColor,
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0),
+              topLeft: Radius.circular(defaultDialogBorderRadiusSmall),
+              topRight: Radius.circular(defaultDialogBorderRadiusSmall),
             ),
           ),
           child: Center(
@@ -50,7 +50,7 @@ void showInfoDialog(BuildContext context,
                     color: titleFontColor,
                     fontWeight: FontWeight.bold,
                     fontSize:
-                        Theme.of(context).textTheme.labelMedium!.fontSize)),
+                        Theme.of(context).textTheme.labelMedium?.fontSize)),
           ),
         ),
         titlePadding: const EdgeInsets.all(0),
@@ -58,8 +58,8 @@ void showInfoDialog(BuildContext context,
         actions: actions,
         actionsAlignment: MainAxisAlignment.spaceBetween,
         shape: const RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.all(Radius.circular(defaultDialogBorderRadius))),
+            borderRadius: BorderRadius.all(
+                Radius.circular(defaultDialogBorderRadiusBig))),
       );
     },
   );

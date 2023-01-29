@@ -55,7 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: Colors.transparent,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(defaultBigContentPadding),
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
         child: settingTiles(),
       ),
     );
@@ -64,7 +64,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget settingTiles() {
     var userName = sharedPrefs.getString(userNameKey) ?? defaultUserName;
     return Padding(
-        padding: const EdgeInsets.all(defaultBigContentPadding),
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
         child: ListView(
           children: [
             // User card

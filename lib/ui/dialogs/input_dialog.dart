@@ -13,8 +13,8 @@ StatefulBuilder inputDialogText(
       return AlertDialog(
         title: Center(child: Text(titleText)),
         shape: const RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.all(Radius.circular(defaultDialogBorderRadius))),
+            borderRadius: BorderRadius.all(
+                Radius.circular(defaultDialogBorderRadiusBig))),
         content: TextField(
           controller: controller,
           onChanged: (value) {
@@ -64,8 +64,8 @@ StatefulBuilder inputDialogTextBox({String titleText = "Enter some text"}) {
       return AlertDialog(
         title: Center(child: Text(titleText)),
         shape: const RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.all(Radius.circular(defaultDialogBorderRadius))),
+            borderRadius: BorderRadius.all(
+                Radius.circular(defaultDialogBorderRadiusBig))),
         content: TextField(
           maxLines: 7,
           controller: controller,

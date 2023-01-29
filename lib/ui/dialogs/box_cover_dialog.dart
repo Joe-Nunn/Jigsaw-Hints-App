@@ -9,7 +9,7 @@ import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_button/animated_button.dart';
 
-void showBoxCoverDialog(BuildContext context, GlobalKey cameraKey) {
+void showBoxCoverDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -36,11 +36,11 @@ void showBoxCoverDialog(BuildContext context, GlobalKey cameraKey) {
           ),
           titlePadding: const EdgeInsets.all(0),
           content: getContent(context, box),
-          actions: getActions(context, cameraKey, box),
+          actions: getActions(context, box),
           actionsAlignment: MainAxisAlignment.spaceBetween,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(defaultDialogBorderRadius),
+              Radius.circular(defaultDialogBorderRadiusBig),
             ),
           ),
         );
@@ -60,27 +60,23 @@ Column boxSelectedContent(
   return Column(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Stack(
-        children: [
-          SizedBox(
-            width: desiredPieceSize,
-            height: desiredPieceSize,
-            child: Animate(
-              child: Image.file(
-                boxCoverProvider.boxCover!,
-                fit: BoxFit.cover,
+      SizedBox(
+        width: desiredPieceSize,
+        height: desiredPieceSize,
+        child: Animate(
+          child: Image.file(
+            boxCoverProvider.boxCover!,
+            fit: BoxFit.cover,
+          )
+              .animate(
+                onPlay: (controller) => controller.repeat(),
               )
-                  .animate(
-                    onPlay: (controller) => controller.repeat(),
-                  )
-                  .shimmer(duration: 3000.ms)
-                  .then(delay: 5000.ms),
-            ),
-          ),
-        ],
+              .shimmer(duration: 3000.ms)
+              .then(delay: 5000.ms),
+        ),
       ),
       const SizedBox(
-        height: defaultSmallWhitespace,
+        height: defaultWhitespaceSmall,
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -164,8 +160,8 @@ Column boxNotSelectedContent(BuildContext context) {
   );
 }
 
-List<Widget> getActions(BuildContext context, GlobalKey cameraKey,
-    BoxCoverProvider boxCoverProvider) {
+List<Widget> getActions(
+    BuildContext context, BoxCoverProvider boxCoverProvider) {
   return boxCoverProvider.boxCover == null
       ? [Container(), Container()]
       : [

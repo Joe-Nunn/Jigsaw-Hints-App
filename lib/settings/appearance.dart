@@ -28,7 +28,7 @@ class _AppearanceSettingsState extends State<AppearanceSettings> {
         title: "Settings",
       ),
       body: ListView(
-        padding: const EdgeInsets.all(defaultBigContentPadding),
+        padding: const EdgeInsets.all(defaultContentPaddingBig),
         children: settingsTiles,
       ),
     );
