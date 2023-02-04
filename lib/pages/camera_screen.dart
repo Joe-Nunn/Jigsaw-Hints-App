@@ -48,11 +48,18 @@ class _CameraScreenState extends State<CameraScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   // Holds the position information of the guideline box
-  final Map<String, double> _position = {
+  final Map<String, double> _overlayPos = {
     'x': 0,
     'y': 0,
     'w': desiredPieceSize,
     'h': desiredPieceSize,
+  };
+
+  final Map<String, double> _overlaySize = {
+    'w_piece': desiredPieceSize,
+    'h_piece': desiredPieceSize,
+    'w_box': 0,
+    'h_box': 0,
   };
 
   initializeCamera(int cameraIndex) async {
@@ -82,9 +89,12 @@ class _CameraScreenState extends State<CameraScreen> {
       bottomRightKey,
     ];
     // Center of the screen coordinates
-    _position['x'] =
+    _overlayPos['x'] =
         MediaQuery.of(context).size.width / 2 - desiredPieceSize / 2;
-    _position['y'] = MediaQuery.of(context).size.height / 2 - desiredPieceSize;
+    _overlayPos['y'] =
+        MediaQuery.of(context).size.height / 2 - desiredPieceSize;
+    _overlaySize['w_box'] = MediaQuery.of(context).size.width;
+    _overlaySize['h_box'] = MediaQuery.of(context).size.height / 1.44;
 
     return Consumer2<CameraModeProvider, BoxCoverProvider>(
       builder: (context, cameraMode, box, child) {
@@ -111,7 +121,10 @@ class _CameraScreenState extends State<CameraScreen> {
                   body: Stack(
                     children: [
                       body(context, showcaseKeys, cameraMode),
-                      GuidelineBox(position: _position, mode: cameraMode.mode),
+                      GuidelineBox(
+                          position: _overlayPos,
+                          size: _overlaySize,
+                          mode: cameraMode.mode),
                     ],
                   ),
                 ),
@@ -149,7 +162,7 @@ class _CameraScreenState extends State<CameraScreen> {
                 Align(
                   child: Showcase(
                     key: keys.elementAt(1),
-                    description: 'Take photo of a puzzle',
+                    description: 'Take photo of a box or puzzle',
                     child: ElevatedButton(
                       onPressed: () async {
                         // Ensure that the camera is initialized.
@@ -170,7 +183,7 @@ class _CameraScreenState extends State<CameraScreen> {
                             barrierDismissible: false,
                             builder: (_) => JigsawPieceDialog(
                               piece: File(path),
-                              base: File(path),
+                              base: box.boxCover!,
                             ),
                           );
                         }

@@ -13,10 +13,10 @@ import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class JigsawPieceDialog extends StatefulWidget {
-  File piece;
-  File base;
+  final File piece;
+  final File base;
 
-  JigsawPieceDialog({
+  const JigsawPieceDialog({
     Key? key,
     required this.piece,
     required this.base,

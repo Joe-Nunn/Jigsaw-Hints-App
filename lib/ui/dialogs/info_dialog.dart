@@ -69,7 +69,6 @@ Widget imageDialog(BuildContext context, String path) {
   return Dialog(
     child: Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 8.0),
@@ -97,13 +96,9 @@ Widget imageDialog(BuildContext context, String path) {
             ],
           ),
         ),
-        SizedBox(
-          width: 220,
-          height: 200,
-          child: Image.file(
-            File(path),
-            fit: BoxFit.cover,
-          ),
+        Image.file(
+          File(path),
+          fit: BoxFit.cover,
         ),
       ],
     ),
