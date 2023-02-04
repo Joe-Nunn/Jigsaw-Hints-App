@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
@@ -166,7 +168,10 @@ class _CameraScreenState extends State<CameraScreen> {
                           showDialog(
                             context: context,
                             barrierDismissible: false,
-                            builder: (_) => JigsawPieceDialog(imagePath: path),
+                            builder: (_) => JigsawPieceDialog(
+                              piece: File(path),
+                              base: File(path),
+                            ),
                           );
                         }
                       },

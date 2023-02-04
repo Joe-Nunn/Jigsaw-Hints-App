@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,16 +7,19 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:http/http.dart';
 import 'package:jigsaw_hints/http/image_converter.dart';
 import 'package:jigsaw_hints/http/image_sender.dart';
+import 'package:jigsaw_hints/pages/widgets/solved_puzzle.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class JigsawPieceDialog extends StatefulWidget {
-  final String imagePath;
+  File piece;
+  File base;
 
-  const JigsawPieceDialog({
+  JigsawPieceDialog({
     Key? key,
-    required this.imagePath,
+    required this.piece,
+    required this.base,
   }) : super(key: key);
 
   @override
@@ -31,12 +35,18 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   void initState() {
     super.initState();
     // Send image to the Flask server
-    sendImageToServer(context);
+    sendImageToServer();
   }
 
-  void sendImageToServer(BuildContext context) async {
+  void sendImageToServer() async {
     response = imageSender.sendImageToFlask(
-        context, ImageConverter.encodeToBase64(widget.imagePath));
+      piece: ImageConverter.encodeToBase64(widget.piece),
+      base: ImageConverter.encodeToBase64(widget.base),
+    );
+  }
+
+  void sendImageToServerTestData() async {
+    response = imageSender.sendImageToFlaskTestData();
   }
 
   @override
@@ -86,13 +96,18 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
       String body = snapshot.data!.body;
       if (statusCode != 200) {
         body = "HTTP $statusCode: $body";
+        return Text(
+          body,
+          style: Theme.of(context).textTheme.bodyLarge,
+        );
       }
-      return Text(
-        body,
-        style: Theme.of(context).textTheme.bodyLarge,
+      return SolvedJigsawPuzzle(
+        data: jsonDecode(body),
+        base: widget.base,
       );
     } else if (snapshot.hasError) {
       String textToShow = "";
+      debugPrint("### ERROR ${snapshot.error.toString()}");
       if (snapshot.error is SocketException) {
         textToShow = "No Internet connection 😑";
       } else if (snapshot.error is HttpException) {
@@ -111,7 +126,7 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
         width: desiredPieceSize,
         height: desiredPieceSize,
         child: Image.file(
-          File(widget.imagePath),
+          widget.piece,
           fit: BoxFit.cover,
         )
             .animate(

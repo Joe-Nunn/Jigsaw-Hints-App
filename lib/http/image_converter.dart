@@ -5,9 +5,8 @@ import 'dart:core';
 import 'dart:io';
 
 class ImageConverter {
-  static String encodeToBase64(String image) {
-    File file = File(image);
-    List<int> imageBytes = file.readAsBytesSync();
+  static String encodeToBase64(File image) {
+    List<int> imageBytes = image.readAsBytesSync();
     String base64Image = base64Encode(imageBytes);
     return base64Image;
   }
