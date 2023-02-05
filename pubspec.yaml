@@ -48,6 +48,7 @@ dependencies:
   loading_animations: ^2.2.0
   http: ^0.13.5
   flutter_spinkit: ^5.1.0
+  pinch_zoom: ^1.0.0
 
 dev_dependencies:
   flutter_test:

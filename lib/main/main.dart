@@ -19,7 +19,7 @@ void main() async {
   runApp(MultiProvider(providers: [
     Provider<SharedPreferencesProvider?>(
         create: (_) =>
-            SharedPreferencesProvider(SharedPreferences.getInstance())),
+            SharedPreferencesProvider(SharedPreferences.getInstance())), 
     StreamProvider(
         create: (context) =>
             context.read<SharedPreferencesProvider>().prefsState,

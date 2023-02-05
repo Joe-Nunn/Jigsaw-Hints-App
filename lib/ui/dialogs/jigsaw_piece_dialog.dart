@@ -103,7 +103,6 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
       }
       return SolvedJigsawPuzzle(
         data: jsonDecode(body),
-        base: widget.base,
       );
     } else if (snapshot.hasError) {
       String textToShow = "";
