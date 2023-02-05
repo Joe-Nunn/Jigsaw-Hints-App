@@ -143,8 +143,25 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
 
   List<Widget> getActions(
       BuildContext context, AsyncSnapshot<Response> snapshot) {
-    if (snapshot.hasData || snapshot.hasError) {
+    if (snapshot.hasError) {
       return [Container(), popButton(context)];
+    } else if (snapshot.hasData) {
+      return [
+        Tooltip(
+          showDuration: const Duration(seconds: 3),
+          message: "Pinch to zoom in 🤏",
+          child: GestureDetector(
+            child: IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.info_outline,
+                  color: Colors.blue,
+                  size: defaultIconSize / 1.5,
+                )),
+          ),
+        ),
+        popButton(context)
+      ];
     }
     return [
       popButton(context,
