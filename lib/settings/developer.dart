@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:jigsaw_hints/ui/menus/app_bar.dart';
-import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/main/main.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
+import 'package:jigsaw_hints/ui/menus/app_bar.dart';
+import 'package:jigsaw_hints/utils/app_version.dart';
+import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AppearanceSettings extends StatefulWidget {
-  const AppearanceSettings({super.key});
+class DeveloperSettings extends StatefulWidget {
+  const DeveloperSettings({super.key});
 
   @override
-  State<AppearanceSettings> createState() => _AppearanceSettingsState();
+  State<DeveloperSettings> createState() => _DeveloperSettingsState();
 }
 
-class _AppearanceSettingsState extends State<AppearanceSettings> {
+class _DeveloperSettingsState extends State<DeveloperSettings> {
   late SharedPreferences sharedPrefs;
-  // Values
-  late bool isDarkMode;
-
+  late bool isDebugMode;
   @override
   Widget build(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
-    isDarkMode = sharedPrefs.getBool(SharedPrefsKeys.darkMode.name) ?? defaultDarkMode;
+    isDebugMode = sharedPrefs.getBool(SharedPrefsKeys.debugMode.name) ?? defaultDebugMode;
     return Scaffold(
       appBar: const JigsawAppBar(
         title: "Settings",
@@ -36,20 +35,17 @@ class _AppearanceSettingsState extends State<AppearanceSettings> {
 
   List<Widget> get settingsTiles => [
         ListTile(
-            leading: const Icon(
-              Icons.dark_mode_rounded,
-            ),
-            title: const Text('Dark Mode'),
-            subtitle: const Text('Toggle dark mode'),
+            leading: const Icon(Icons.network_ping),
+            title: const Text('Debug Mode'),
+            subtitle: const Text('Send test data to server'),
             trailing: Switch.adaptive(
-              value: isDarkMode,
+              value: isDebugMode,
               activeColor: defaultSliderActiveColour,
               inactiveTrackColor: defaultSliderInactiveColour,
               onChanged: (value) {
                 setState(() {
-                  isDarkMode = value;
-                  sharedPrefs.setBool(SharedPrefsKeys.darkMode.name, value);
-                  MyApp.of(context).setState(() {});
+                  isDebugMode = value;
+                  sharedPrefs.setBool(SharedPrefsKeys.debugMode.name, value);
                 });
               },
             ),

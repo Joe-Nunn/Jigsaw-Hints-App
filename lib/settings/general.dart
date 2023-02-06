@@ -38,8 +38,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
 
   void initUserData(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
-    hintAccuracy = sharedPrefs.getInt(hintAccuracyKey) ?? defaultHintAccuracy;
-    algorithmCorrectness = sharedPrefs.getInt(algorithmCorrectnessKey) ??
+    hintAccuracy = sharedPrefs.getInt(SharedPrefsKeys.hintAccuracy.name) ?? defaultHintAccuracy;
+    algorithmCorrectness = sharedPrefs.getInt(SharedPrefsKeys.algorithmCorrectness.name) ??
         defaultAlgorithmCorrectness;
   }
 
@@ -52,7 +52,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
           onTap: () => showDialog(
               context: context,
               builder: (BuildContext context) => inputDialogSlider(
-                  context, sharedPrefs, hintAccuracyKey, hintAccuracy,
+                  context, sharedPrefs, SharedPrefsKeys.hintAccuracy.name, hintAccuracy,
                   titleText: "Hint Accuracy")).then((_) => setState(() {})),
         ),
         Container(
@@ -70,7 +70,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
               builder: (BuildContext context) => inputDialogTextSlider(
                   context,
                   sharedPrefs,
-                  algorithmCorrectnessKey,
+                  SharedPrefsKeys.algorithmCorrectness.name,
                   algorithmCorrectness,
                   AlgorithmCorrectness.values,
                   titleText: "Hint Accuracy")).then((_) => setState(() {})),

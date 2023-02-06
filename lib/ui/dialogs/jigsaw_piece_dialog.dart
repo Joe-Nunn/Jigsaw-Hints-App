@@ -8,9 +8,11 @@ import 'package:http/http.dart';
 import 'package:jigsaw_hints/http/image_converter.dart';
 import 'package:jigsaw_hints/http/image_sender.dart';
 import 'package:jigsaw_hints/pages/widgets/solved_puzzle.dart';
+import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class JigsawPieceDialog extends StatefulWidget {
   final File piece;
@@ -35,7 +37,10 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   void initState() {
     super.initState();
     // Send image to the Flask server
-    sendImageToServer();
+    SharedPreferences.getInstance().then((sharedPrefs) =>
+        sharedPrefs.getBool(SharedPrefsKeys.debugMode.name)!
+            ? sendImageToServerTestData()
+            : sendImageToServer());
   }
 
   void sendImageToServer() async {

@@ -36,7 +36,7 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
 
   void initUserData(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
-    fontSize = sharedPrefs.getInt(fontSizeKey) ?? defaultFontSize;
+    fontSize = sharedPrefs.getInt(SharedPrefsKeys.fontSize.name) ?? defaultFontSize;
   }
 
   List<Widget> get settingsTiles => [
@@ -65,7 +65,7 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
           onTap: () => showDialog(
               context: context,
               builder: (BuildContext context) => inputDialogTextSlider(
-                  context, sharedPrefs, fontSizeKey, fontSize, FontSize.values,
+                  context, sharedPrefs, SharedPrefsKeys.fontSize.name, fontSize, FontSize.values,
                   titleText: "Font Size")).then((_) => setState(() {})),
         ),
       ];

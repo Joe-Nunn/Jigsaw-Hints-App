@@ -16,7 +16,7 @@ void main() async {
   final cameras = await availableCameras();
   // Ensure the SharedPreferences are initialized
   final sharedPrefs = await SharedPreferences.getInstance();
-  runApp(MultiProvider(providers: [
+  runApp(MultiProvider(providers: [ 
     Provider<SharedPreferencesProvider?>(
         create: (_) =>
             SharedPreferencesProvider(SharedPreferences.getInstance())), 
@@ -76,7 +76,7 @@ class _MyAppState extends State<MyApp> {
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,
           )),
-      themeMode: (sharedPrefs.getBool(darkModeKey) ?? defaultDarkMode)
+      themeMode: (sharedPrefs.getBool(SharedPrefsKeys.darkMode.name) ?? defaultDarkMode)
           ? ThemeMode.dark
           : ThemeMode.light,
       debugShowCheckedModeBanner: false,

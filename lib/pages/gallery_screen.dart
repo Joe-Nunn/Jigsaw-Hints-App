@@ -34,10 +34,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   void usePicture(File image, BoxCoverProvider boxCover) async {
     allowPop = false;
-    Timer(const Duration(milliseconds: 1000), () {
+    Timer(const Duration(milliseconds: 800), () {
       boxCover.boxCover = image;
       selectButtonController.success();
-      Timer(const Duration(milliseconds: 500), () {
+      Timer(const Duration(milliseconds: 400), () {
         Navigator.pop(context);
       });
     });
