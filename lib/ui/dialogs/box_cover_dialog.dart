@@ -123,7 +123,7 @@ Column boxNotSelectedContent(BuildContext context) {
         height: desiredPieceSize / 1.5,
         child: Image.asset("images/jigsaw_box.png")
             .animate()
-            .shake(duration: 500.ms),
+            .shake(duration: 300.ms),
       ),
       imagesProvider.capturedImages.isEmpty
           ? AnimatedButton(
@@ -140,7 +140,7 @@ Column boxNotSelectedContent(BuildContext context) {
                       color: Colors.white,
                     ),
               ),
-            ).animate(delay: 500.ms).scale()
+            ).animate(delay: 300.ms).scale(duration: 200.ms)
           : AnimatedButton(
               onPressed: () {
                 Navigator.push(context, slideIn(const GalleryScreen()));
@@ -155,7 +155,7 @@ Column boxNotSelectedContent(BuildContext context) {
                       color: Colors.white,
                     ),
               ),
-            ).animate(delay: 500.ms).scale()
+            ).animate(delay: 300.ms).scale(duration: 200.ms)
     ],
   );
 }

@@ -37,21 +37,26 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   void initState() {
     super.initState();
     // Send image to the Flask server
-    SharedPreferences.getInstance().then((sharedPrefs) =>
-        sharedPrefs.getBool(SharedPrefsKeys.debugMode.name)!
-            ? sendImageToServerTestData()
-            : sendImageToServer());
-  }
-
-  void sendImageToServer() async {
-    response = imageSender.sendImageToFlask(
-      piece: ImageConverter.encodeToBase64(widget.piece),
-      base: ImageConverter.encodeToBase64(widget.base),
+    SharedPreferences.getInstance().then(
+      (sharedPrefs) => sharedPrefs.getBool(SharedPrefsKeys.debugMode.name)!
+          ? sendImageToServerTestData(
+              sharedPrefs.getString(SharedPrefsKeys.serverAddress.name)!)
+          : sendImageToServer(
+              sharedPrefs.getString(SharedPrefsKeys.serverAddress.name)!),
     );
   }
 
-  void sendImageToServerTestData() async {
-    response = imageSender.sendImageToFlaskTestData();
+  void sendImageToServer(String serverAddress) async {
+    response = imageSender.sendImageToFlask(
+      piece: ImageConverter.encodeToBase64(widget.piece),
+      base: ImageConverter.encodeToBase64(widget.base),
+      serverAddress: serverAddress,
+    );
+  }
+
+  void sendImageToServerTestData(String serverAddress) async {
+    response =
+        imageSender.sendImageToFlaskTestData(serverAddress: serverAddress);
   }
 
   @override

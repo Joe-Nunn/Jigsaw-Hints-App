@@ -14,5 +14,6 @@ enum SharedPrefsKeys {
   hintAccuracy,
   algorithmCorrectness,
   fontSize,
-  debugMode,
+  debugMode, 
+  serverAddress,
 }

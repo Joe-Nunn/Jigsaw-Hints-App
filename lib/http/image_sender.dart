@@ -10,11 +10,10 @@ import 'package:flutter/material.dart';
 class ImageSender {
   final HttpClient _client = HttpClient();
   final String serverAddressEmulator = "http://10.0.2.2:5000";
-  final String serverAddress = "http://10.89.72.162:4545";
   final String contentType = "application/json";
   final Duration timeoutDuration = const Duration(seconds: 90);
 
-  Future<List<String>> retrieveDataFromFlask() async {
+  Future<List<String>> retrieveDataFromFlask(String serverAddress) async {
     List<String> groups = [];
     _client
         .getUrl(Uri.parse("$serverAddress/retrieve"))
@@ -42,7 +41,11 @@ class ImageSender {
   }
 
   Future<http.Response> sendImageToFlask(
-      {required String piece, required String base}) async {
+      {required String piece,
+      required String base,
+      required String serverAddress}) async {
+    print(serverAddress);
+    print("#####################################{$serverAddress}");
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),
@@ -60,7 +63,8 @@ class ImageSender {
     return response;
   }
 
-  Future<http.Response> sendImageToFlaskTestData() async {
+  Future<http.Response> sendImageToFlaskTestData(
+      {required String serverAddress}) async {
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),

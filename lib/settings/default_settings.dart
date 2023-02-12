@@ -4,6 +4,7 @@ const bool defaultDarkMode = false;
 const int defaultAlgorithmCorrectness = 2;
 const int defaultFontSize = 1;
 const bool defaultDebugMode = false;
+const String defaultServerAddress = "https://example.com/";
 
 enum FontSize {
   small,
