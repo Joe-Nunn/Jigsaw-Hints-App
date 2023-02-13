@@ -71,18 +71,26 @@ Widget imageDialog(BuildContext context, String path) {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
+              ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.close_rounded),
-                color: Colors.redAccent,
+                label: const Text("Retake"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                ),
               ),
-              IconButton(
+              ElevatedButton.icon(
                 onPressed: () {
                   // Add image to provider
                   Provider.of<ImagesProvider>(context, listen: false)
@@ -91,7 +99,15 @@ Widget imageDialog(BuildContext context, String path) {
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.check_rounded),
-                color: Colors.green,
+                label: const Text("Accept"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
