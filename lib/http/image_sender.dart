@@ -44,8 +44,6 @@ class ImageSender {
       {required String piece,
       required String base,
       required String serverAddress}) async {
-    print(serverAddress);
-    print("#####################################{$serverAddress}");
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),

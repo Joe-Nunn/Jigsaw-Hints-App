@@ -1,9 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:jigsaw_hints/http/image_converter.dart';
-import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class SolvedJigsawPuzzle extends StatelessWidget {

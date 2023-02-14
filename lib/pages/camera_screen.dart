@@ -159,44 +159,7 @@ class _CameraScreenState extends State<CameraScreen> {
             child: Stack(
               children: [
                 boxCoverButton(keys, context, box),
-                Align(
-                  child: Showcase(
-                    key: keys.elementAt(1),
-                    description: 'Take photo of a box or puzzle',
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        // Ensure that the camera is initialized.
-                        await _initializeControllerFuture;
-                        // Attempt to take a picture and get the file
-                        var xFile = await _controller.takePicture();
-                        var path = xFile.path;
-                        if (!mounted) return;
-                        // If the picture was taken, display it in a popup.
-                        if (camera.mode == CameraMode.box) {
-                          showDialog(
-                              context: context,
-                              builder: (_) => imageDialog(context, path));
-                        } else if (camera.mode == CameraMode.piece) {
-                          // Send image to the server
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => JigsawPieceDialog(
-                              piece: File(path),
-                              base: box.boxCover!,
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(32),
-                          foregroundColor:
-                              Theme.of(context).colorScheme.secondary),
-                      child: const SizedBox(),
-                    ),
-                  ),
-                ),
+                takePictureButton(keys, context, camera, box),
                 flashButton(keys),
               ],
             ),
@@ -205,6 +168,48 @@ class _CameraScreenState extends State<CameraScreen> {
         ],
       );
     });
+  }
+
+  Align takePictureButton(List<GlobalKey<State<StatefulWidget>>> keys,
+      BuildContext context, CameraModeProvider camera, BoxCoverProvider box) {
+    return Align(
+      child: Showcase(
+        key: keys.elementAt(1),
+        description: 'Take photo of a box or puzzle',
+        child: ElevatedButton(
+          onPressed: () async {
+            // Ensure that the camera is initialized.
+            await _initializeControllerFuture;
+            // Attempt to take a picture and get the file
+            var xFile = await _controller.takePicture();
+            var path = xFile.path;
+            if (!mounted) return;
+            // If the box picture was taken, display it in a popup.
+            if (camera.mode == CameraMode.box) {
+              showDialog(
+                  context: context,
+                  builder: (_) => imageDialog(context, path),
+                  barrierDismissible: false);
+            } else if (camera.mode == CameraMode.piece) {
+              // Send image to the server
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => JigsawPieceDialog(
+                  piece: File(path),
+                  base: box.boxCover!,
+                ),
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(32),
+              foregroundColor: Theme.of(context).colorScheme.secondary),
+          child: const SizedBox(),
+        ),
+      ),
+    );
   }
 
   Positioned flashButton(List<GlobalKey<State<StatefulWidget>>> keys) {
@@ -221,7 +226,7 @@ class _CameraScreenState extends State<CameraScreen> {
               color: flashlightOn ? Colors.yellow : Colors.white,
               size: defaultIconSize,
             ),
-            onPressed: () {
+            onPressed: () async {
               flashlightOn
                   ? _controller.setFlashMode(FlashMode.off)
                   : _controller.setFlashMode(FlashMode.always);

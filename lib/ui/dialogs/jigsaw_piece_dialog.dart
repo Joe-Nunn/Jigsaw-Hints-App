@@ -12,6 +12,7 @@ import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class JigsawPieceDialog extends StatefulWidget {
@@ -30,39 +31,31 @@ class JigsawPieceDialog extends StatefulWidget {
 
 class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   final ImageSender imageSender = ImageSender();
-  StreamSubscription<Response>? responseStream;
-  Future<Response>? response;
+  late SharedPreferences sharedPrefs;
+  late String serverAddress;
+  late bool isDebugMode;
 
-  @override
-  void initState() {
-    super.initState();
-    // Send image to the Flask server
-    SharedPreferences.getInstance().then(
-      (sharedPrefs) => sharedPrefs.getBool(SharedPrefsKeys.debugMode.name)!
-          ? sendImageToServerTestData(
-              sharedPrefs.getString(SharedPrefsKeys.serverAddress.name)!)
-          : sendImageToServer(
-              sharedPrefs.getString(SharedPrefsKeys.serverAddress.name)!),
-    );
-  }
-
-  void sendImageToServer(String serverAddress) async {
-    response = imageSender.sendImageToFlask(
+  Future<Response> sendImageToServer(String serverAddress) async {
+    return imageSender.sendImageToFlask(
       piece: ImageConverter.encodeToBase64(widget.piece),
       base: ImageConverter.encodeToBase64(widget.base),
       serverAddress: serverAddress,
     );
   }
 
-  void sendImageToServerTestData(String serverAddress) async {
-    response =
-        imageSender.sendImageToFlaskTestData(serverAddress: serverAddress);
+  Future<Response> sendImageToServerTestData(String serverAddress) async {
+    return imageSender.sendImageToFlaskTestData(serverAddress: serverAddress);
   }
 
   @override
   Widget build(BuildContext context) {
+    sharedPrefs = context.watch<SharedPreferences>();
+    serverAddress = sharedPrefs.getString(SharedPrefsKeys.serverAddress.name)!;
+    isDebugMode = sharedPrefs.getBool(SharedPrefsKeys.debugMode.name)!;
     return FutureBuilder<Response>(
-        future: response,
+        future: isDebugMode
+            ? sendImageToServerTestData(serverAddress)
+            : sendImageToServer(serverAddress),
         builder: (context, snapshot) {
           bool responseIsSuccess =
               snapshot.hasData && snapshot.data!.statusCode == 200;
@@ -130,25 +123,30 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
         textToShow,
         style: Theme.of(context).textTheme.bodyLarge,
       );
+    } else if (snapshot.connectionState == ConnectionState.waiting) {
+      return SizedBox(
+          width: desiredPieceSize,
+          height: desiredPieceSize,
+          child: Image.file(
+            widget.piece,
+            fit: BoxFit.cover,
+          )
+              .animate(
+                delay: 2.seconds,
+                onComplete: (controller) => controller.repeat(),
+              )
+              .then(delay: 3.seconds)
+              .tint(duration: 2.seconds, color: Colors.red, end: 0.3)
+              .then(delay: 3.seconds)
+              .tint(duration: 2.seconds, color: Colors.green, end: 0.3)
+              .then(delay: 3.seconds)
+              .tint(duration: 2.seconds, color: Colors.blue, end: 0.3)
+              .then(delay: 3.seconds));
     }
-    return SizedBox(
-        width: desiredPieceSize,
-        height: desiredPieceSize,
-        child: Image.file(
-          widget.piece,
-          fit: BoxFit.cover,
-        )
-            .animate(
-              delay: 2.seconds,
-              onComplete: (controller) => controller.repeat(),
-            )
-            .then(delay: 3.seconds)
-            .tint(duration: 2.seconds, color: Colors.red, end: 0.3)
-            .then(delay: 3.seconds)
-            .tint(duration: 2.seconds, color: Colors.green, end: 0.3)
-            .then(delay: 3.seconds)
-            .tint(duration: 2.seconds, color: Colors.blue, end: 0.3)
-            .then(delay: 3.seconds));
+    return const SpinKitFadingCircle(
+      color: Colors.blue,
+      size: 50.0,
+    );
   }
 
   List<Widget> getActions(
