@@ -37,21 +37,21 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   late String serverAddress;
   late bool isDebugMode;
   late String algorithmType;
+  late int hintAccuracy;
 
   Future<Response> sendImageToServer(
-      String serverAddress, String algorithmType) async {
+      String serverAddress, String algorithmType, int hintAccuracy) async {
     return imageSender.sendImageToFlask(
       piece: ImageConverter.encodeToBase64(widget.piece),
       base: ImageConverter.encodeToBase64(widget.base),
       serverAddress: serverAddress,
       algorithmType: algorithmType,
+      hintAccuracy: hintAccuracy,
     );
   }
 
-  Future<Response> sendImageToServerTestData(
-      String serverAddress, String algorithmType) async {
-    return imageSender.sendImageToFlaskTestData(
-        serverAddress: serverAddress, algorithmType: algorithmType);
+  Future<Response> sendImageToServerTestData(String serverAddress) async {
+    return imageSender.sendImageToFlaskTestData(serverAddress: serverAddress);
   }
 
   @override
@@ -65,11 +65,13 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
             sharedPrefs.getInt(SharedPrefsKeys.algorithmType.name) ??
                 defaultAlgorithmType])
         .toUpperCase();
+    hintAccuracy = sharedPrefs.getInt(SharedPrefsKeys.hintAccuracy.name) ??
+        defaultHintAccuracy;
 
     return FutureBuilder<Response>(
         future: isDebugMode
-            ? sendImageToServerTestData(serverAddress, algorithmType)
-            : sendImageToServer(serverAddress, algorithmType),
+            ? sendImageToServerTestData(serverAddress)
+            : sendImageToServer(serverAddress, algorithmType, hintAccuracy),
         builder: (context, snapshot) {
           bool responseIsSuccess =
               snapshot.hasData && snapshot.data!.statusCode == 200;

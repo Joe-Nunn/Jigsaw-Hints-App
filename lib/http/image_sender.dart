@@ -44,7 +44,8 @@ class ImageSender {
       {required String piece,
       required String base,
       required String serverAddress,
-      required String algorithmType}) async {
+      required String algorithmType,
+      required int hintAccuracy}) async {
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),
@@ -55,6 +56,7 @@ class ImageSender {
         'piece_data': piece,
         'base_data': base,
         'algorithm_type': algorithmType,
+        'hint_accuracy': hintAccuracy.toString(),
       }),
     )
         .timeout(timeoutDuration, onTimeout: () {
@@ -64,8 +66,7 @@ class ImageSender {
   }
 
   Future<http.Response> sendImageToFlaskTestData(
-      {required String serverAddress,
-      required String algorithmType}) async {
+      {required String serverAddress}) async {
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),
