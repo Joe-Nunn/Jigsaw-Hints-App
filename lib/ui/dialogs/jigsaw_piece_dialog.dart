@@ -57,8 +57,9 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
             ? sendImageToServerTestData(serverAddress)
             : sendImageToServer(serverAddress),
         builder: (context, snapshot) {
-          bool responseIsSuccess =
-              snapshot.hasData && snapshot.data!.statusCode == 200;
+          bool responseIsSuccess = snapshot.hasData &&
+              snapshot.data!.statusCode == 200 &&
+              hasValidData(snapshot);
           return AlertDialog(
             title: snapshot.hasData
                 ? Container(
@@ -94,19 +95,31 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   }
 
   Widget getContent(BuildContext context, AsyncSnapshot<Response> snapshot) {
-    if (snapshot.hasData) {
+    if (snapshot.hasData && !hasValidData(snapshot)) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Text("Puzzle couldn't be solved 🤔"),
+          Text("Please try again 🧩"),
+        ],
+      );
+    } else if (snapshot.hasData) {
       final statusCode = snapshot.data!.statusCode;
       String body = snapshot.data!.body;
-      if (statusCode != 200) {
+      if (statusCode != 200 || body.isEmpty || !bodyIsValidJson(body)) {
         body = "HTTP $statusCode: $body";
         return Text(
           body,
           style: Theme.of(context).textTheme.bodyLarge,
         );
+      } else {
+        Map<String, dynamic> data = jsonDecode(body);
+        String base64Image = data["solved_data"];
+        return SolvedJigsawPuzzle(
+          image: base64Image,
+        );
       }
-      return SolvedJigsawPuzzle(
-        data: jsonDecode(body),
-      );
     } else if (snapshot.hasError) {
       String textToShow = "";
       debugPrint("### ERROR ${snapshot.error.toString()}");
@@ -151,7 +164,7 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
 
   List<Widget> getActions(
       BuildContext context, AsyncSnapshot<Response> snapshot) {
-    if (snapshot.hasError) {
+    if (snapshot.hasError || (snapshot.hasData && !hasValidData(snapshot))) {
       return [Container(), popButton(context)];
     } else if (snapshot.hasData) {
       return [
@@ -192,5 +205,21 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
       ),
       Text("Solving...", style: Theme.of(context).textTheme.labelMedium),
     ];
+  }
+
+  bool hasValidData(AsyncSnapshot<Response> snapshot) {
+    String body = snapshot.data!.body;
+    Map<String, dynamic> data = jsonDecode(body);
+    String? base64Image = data["solved_data"];
+    return base64Image != null && base64Image.isNotEmpty;
+  }
+
+  bool bodyIsValidJson(String body) {
+    try {
+      jsonDecode(body);
+      return true;
+    } catch (ex) {
+      return false;
+    }
   }
 }
