@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:http/http.dart';
 import 'package:jigsaw_hints/http/image_converter.dart';
 import 'package:jigsaw_hints/http/image_sender.dart';
 import 'package:jigsaw_hints/pages/widgets/solved_puzzle.dart';
+import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
@@ -34,32 +36,43 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   late SharedPreferences sharedPrefs;
   late String serverAddress;
   late bool isDebugMode;
+  late String algorithmType;
 
-  Future<Response> sendImageToServer(String serverAddress) async {
+  Future<Response> sendImageToServer(
+      String serverAddress, String algorithmType) async {
     return imageSender.sendImageToFlask(
       piece: ImageConverter.encodeToBase64(widget.piece),
       base: ImageConverter.encodeToBase64(widget.base),
       serverAddress: serverAddress,
+      algorithmType: algorithmType,
     );
   }
 
-  Future<Response> sendImageToServerTestData(String serverAddress) async {
-    return imageSender.sendImageToFlaskTestData(serverAddress: serverAddress);
+  Future<Response> sendImageToServerTestData(
+      String serverAddress, String algorithmType) async {
+    return imageSender.sendImageToFlaskTestData(
+        serverAddress: serverAddress, algorithmType: algorithmType);
   }
 
   @override
   Widget build(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
-    serverAddress = sharedPrefs.getString(SharedPrefsKeys.serverAddress.name)!;
-    isDebugMode = sharedPrefs.getBool(SharedPrefsKeys.debugMode.name)!;
+    serverAddress = sharedPrefs.getString(SharedPrefsKeys.serverAddress.name) ??
+        defaultServerAddress;
+    isDebugMode =
+        sharedPrefs.getBool(SharedPrefsKeys.debugMode.name) ?? defaultDebugMode;
+    algorithmType = describeEnum(AlgorithmType.values[
+            sharedPrefs.getInt(SharedPrefsKeys.algorithmType.name) ??
+                defaultAlgorithmType])
+        .toUpperCase();
+
     return FutureBuilder<Response>(
         future: isDebugMode
-            ? sendImageToServerTestData(serverAddress)
-            : sendImageToServer(serverAddress),
+            ? sendImageToServerTestData(serverAddress, algorithmType)
+            : sendImageToServer(serverAddress, algorithmType),
         builder: (context, snapshot) {
-          bool responseIsSuccess = snapshot.hasData &&
-              snapshot.data!.statusCode == 200 &&
-              hasValidData(snapshot);
+          bool responseIsSuccess =
+              snapshot.hasData && snapshot.data!.statusCode == 200;
           return AlertDialog(
             title: snapshot.hasData
                 ? Container(
@@ -95,19 +108,19 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   }
 
   Widget getContent(BuildContext context, AsyncSnapshot<Response> snapshot) {
-    if (snapshot.hasData && !hasValidData(snapshot)) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Text("Puzzle couldn't be solved 🤔"),
-          Text("Please try again 🧩"),
-        ],
-      );
-    } else if (snapshot.hasData) {
+    if (snapshot.hasData) {
       final statusCode = snapshot.data!.statusCode;
       String body = snapshot.data!.body;
-      if (statusCode != 200 || body.isEmpty || !bodyIsValidJson(body)) {
+      if (statusCode == 400) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text("Puzzle couldn't be solved 🤔"),
+            Text("Please try again 🧩"),
+          ],
+        );
+      } else if (statusCode != 200 || body.isEmpty || !bodyIsValidJson(body)) {
         body = "HTTP $statusCode: $body";
         return Text(
           body,
@@ -164,9 +177,12 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
 
   List<Widget> getActions(
       BuildContext context, AsyncSnapshot<Response> snapshot) {
-    if (snapshot.hasError || (snapshot.hasData && !hasValidData(snapshot))) {
+    if (snapshot.hasError) {
       return [Container(), popButton(context)];
     } else if (snapshot.hasData) {
+      if (snapshot.data!.statusCode != 200) {
+        return [Container(), popButton(context)];
+      }
       return [
         Tooltip(
           showDuration: const Duration(seconds: 3),
@@ -205,13 +221,6 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
       ),
       Text("Solving...", style: Theme.of(context).textTheme.labelMedium),
     ];
-  }
-
-  bool hasValidData(AsyncSnapshot<Response> snapshot) {
-    String body = snapshot.data!.body;
-    Map<String, dynamic> data = jsonDecode(body);
-    String? base64Image = data["solved_data"];
-    return base64Image != null && base64Image.isNotEmpty;
   }
 
   bool bodyIsValidJson(String body) {

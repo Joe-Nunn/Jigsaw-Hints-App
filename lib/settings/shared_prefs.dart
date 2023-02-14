@@ -12,8 +12,8 @@ enum SharedPrefsKeys {
   darkMode,
   userName,
   hintAccuracy,
-  algorithmCorrectness,
+  algorithmType,
   fontSize,
-  debugMode, 
+  debugMode,
   serverAddress,
 }

@@ -38,21 +38,27 @@ class _GeneralSettingsState extends State<GeneralSettings> {
 
   void initUserData(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
-    hintAccuracy = sharedPrefs.getInt(SharedPrefsKeys.hintAccuracy.name) ?? defaultHintAccuracy;
-    algorithmCorrectness = sharedPrefs.getInt(SharedPrefsKeys.algorithmCorrectness.name) ??
-        defaultAlgorithmCorrectness;
+    hintAccuracy = sharedPrefs.getInt(SharedPrefsKeys.hintAccuracy.name) ??
+        defaultHintAccuracy;
+    algorithmCorrectness =
+        sharedPrefs.getInt(SharedPrefsKeys.algorithmType.name) ??
+            defaultAlgorithmType;
   }
 
   List<Widget> get settingsTiles => [
         ListTile(
           leading: const Icon(Icons.help_center),
           title: const Text('Hint Accuracy'),
-          subtitle: const Text('Set how accurate the hint box should be'),
-          trailing: Text("${hintAccuracy.round()}"),
+          subtitle: const Text('Set the hint box accuracy'),
+          trailing: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.15,
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text("${hintAccuracy.round()}%"))),
           onTap: () => showDialog(
               context: context,
-              builder: (BuildContext context) => inputDialogSlider(
-                  context, sharedPrefs, SharedPrefsKeys.hintAccuracy.name, hintAccuracy,
+              builder: (BuildContext context) => inputDialogSlider(context,
+                  sharedPrefs, SharedPrefsKeys.hintAccuracy.name, hintAccuracy,
                   titleText: "Hint Accuracy")).then((_) => setState(() {})),
         ),
         Container(
@@ -60,20 +66,26 @@ class _GeneralSettingsState extends State<GeneralSettings> {
         ),
         ListTile(
           leading: const Icon(CupertinoIcons.flame),
-          title: const Text('Algorithm Correctness'),
-          subtitle: const Text('Set corectness level of the algorithm'),
-          trailing: Text(
-              describeEnum(AlgorithmCorrectness.values[algorithmCorrectness])
-                  .toUpperCase()),
+          title: const Text('Algorithm'),
+          subtitle: const Text('Choose solving technique'),
+          trailing: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.15,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                  describeEnum(AlgorithmType.values[algorithmCorrectness])
+                      .toUpperCase()),
+            ),
+          ),
           onTap: () => showDialog(
               context: context,
               builder: (BuildContext context) => inputDialogTextSlider(
                   context,
                   sharedPrefs,
-                  SharedPrefsKeys.algorithmCorrectness.name,
+                  SharedPrefsKeys.algorithmType.name,
                   algorithmCorrectness,
-                  AlgorithmCorrectness.values,
-                  titleText: "Hint Accuracy")).then((_) => setState(() {})),
+                  AlgorithmType.values,
+                  titleText: "Algorithm type")).then((_) => setState(() {})),
         ),
       ];
 }

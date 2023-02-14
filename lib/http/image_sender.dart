@@ -43,7 +43,8 @@ class ImageSender {
   Future<http.Response> sendImageToFlask(
       {required String piece,
       required String base,
-      required String serverAddress}) async {
+      required String serverAddress,
+      required String algorithmType}) async {
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),
@@ -53,6 +54,7 @@ class ImageSender {
       body: jsonEncode(<String, String>{
         'piece_data': piece,
         'base_data': base,
+        'algorithm_type': algorithmType,
       }),
     )
         .timeout(timeoutDuration, onTimeout: () {
@@ -62,7 +64,8 @@ class ImageSender {
   }
 
   Future<http.Response> sendImageToFlaskTestData(
-      {required String serverAddress}) async {
+      {required String serverAddress,
+      required String algorithmType}) async {
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),
