@@ -25,17 +25,31 @@ class CameraScreen extends StatefulWidget {
   State<CameraScreen> createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _CameraScreenState extends State<CameraScreen>
+    with WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // If the app is paused, and then resumed, reinitialize the camera controller
+    if (state == AppLifecycleState.resumed) {
+      _initializeControllerFuture = _controller.initialize();
+    }
+  }
+
   @override
   void initState() {
-    initializeCamera(selectedCamera); //Initially selectedCamera = 0
     super.initState();
+    // Initially selectedCamera = 0
+    initializeCamera(selectedCamera);
+    // Add the observer
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     // Dispose of the controller when the widget is disposed.
     _controller.dispose();
+    // Remove the observer
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -141,36 +155,51 @@ class _CameraScreenState extends State<CameraScreen> {
     return Consumer<BoxCoverProvider>(builder: (context, box, child) {
       return Column(
         children: [
-          FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the Future is complete, display the preview.
-                return CameraPreview(_controller);
-              } else {
-                // Otherwise, display a loading indicator.
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 0),
-            child: Stack(
-              children: [
-                boxCoverButton(keys, context, box),
-                takePictureButton(keys, context, camera, box),
-                flashButton(keys),
-              ],
-            ),
-          ),
-          const Spacer(),
+          cameraPreview(),
+          bottomMenu(context, keys, camera, box),
         ],
       );
     });
   }
 
-  Align takePictureButton(List<GlobalKey<State<StatefulWidget>>> keys,
+  FutureBuilder<void> cameraPreview() {
+    return FutureBuilder(
+      future: _initializeControllerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // If the Future is complete, display the preview.
+          return CameraPreview(_controller);
+        } else {
+          // Otherwise, display a loading indicator.
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  Widget boxCoverButton(List<GlobalKey<State<StatefulWidget>>> keys,
+      BuildContext context, BoxCoverProvider box) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: defaultContentPaddingMedium),
+        child: Showcase(
+          key: keys.elementAt(0),
+          description: 'Select the box cover to work with',
+          child: IconButton(
+            onPressed: () => showBoxCoverDialog(context),
+            icon: Icon(
+              Icons.settings_system_daydream,
+              color: box.boxCover == null ? Colors.white : Colors.green,
+              size: defaultIconSize,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget takePictureButton(List<GlobalKey<State<StatefulWidget>>> keys,
       BuildContext context, CameraModeProvider camera, BoxCoverProvider box) {
     return Align(
       child: Showcase(
@@ -212,9 +241,9 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Positioned flashButton(List<GlobalKey<State<StatefulWidget>>> keys) {
-    return Positioned(
-      right: 0,
+  Widget flashButton(List<GlobalKey<State<StatefulWidget>>> keys) {
+    return Align(
+      alignment: Alignment.centerRight,
       child: Padding(
         padding: const EdgeInsets.only(right: defaultContentPaddingMedium),
         child: Showcase(
@@ -240,23 +269,17 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  Positioned boxCoverButton(List<GlobalKey<State<StatefulWidget>>> keys,
-      BuildContext context, BoxCoverProvider box) {
-    return Positioned(
-      left: 0,
-      child: Padding(
-        padding: const EdgeInsets.only(left: defaultContentPaddingMedium),
-        child: Showcase(
-          key: keys.elementAt(0),
-          description: 'Select the box cover to work with',
-          child: IconButton(
-            onPressed: () => showBoxCoverDialog(context),
-            icon: Icon(
-              Icons.settings_system_daydream,
-              color: box.boxCover == null ? Colors.white : Colors.green,
-              size: defaultIconSize,
-            ),
-          ),
+  Widget bottomMenu(BuildContext context, List<GlobalKey> keys,
+      CameraModeProvider camera, BoxCoverProvider box) {
+    return Expanded(
+      child: Container(
+        color: bottomNavBgColour,
+        child: Stack(
+          children: [
+            boxCoverButton(keys, context, box),
+            takePictureButton(keys, context, camera, box),
+            flashButton(keys),
+          ],
         ),
       ),
     );

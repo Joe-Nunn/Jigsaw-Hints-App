@@ -8,6 +8,7 @@ const Color logoFontColour = Color(0xff5065a8);
 const Color themeLightBlue = Color.fromARGB(255, 117, 193, 254);
 const Color themeLightRed = Color(0xfffb7a8f);
 const Color themeLightGreen = Colors.lightGreen;
+const Color bottomNavBgColour = Color(0xFF16232B);
 const Color defaultSliderActiveColour = Color.fromARGB(255, 117, 193, 254);
 const Color defaultSliderInactiveColour = Color.fromRGBO(224, 224, 224, 1);
 const double defaultAppBarPadding = 15.0;
