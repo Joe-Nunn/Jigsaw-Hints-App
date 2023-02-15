@@ -30,9 +30,17 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // App state changed before we got the chance to initialize.
+    if (!_controller.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      _controller.dispose();
+    }
     // If the app is paused, and then resumed, reinitialize the camera controller
-    if (state == AppLifecycleState.resumed) {
-      _initializeControllerFuture = _controller.initialize();
+    else if (state == AppLifecycleState.resumed) {
+      initializeCamera();
       if (Provider.of<TorchProvider>(context, listen: false).status) {
         _controller.setFlashMode(FlashMode.torch);
       }
@@ -43,7 +51,7 @@ class _CameraScreenState extends State<CameraScreen>
   void initState() {
     super.initState();
     // Initially selectedCamera = 0
-    initializeCamera(selectedCamera);
+    initializeCamera();
     // Add the observer
     WidgetsBinding.instance.addObserver(this);
   }
@@ -60,7 +68,10 @@ class _CameraScreenState extends State<CameraScreen>
   late CameraController _controller; //To control the camera
   late Future<void>
       _initializeControllerFuture; //Future to wait until camera initializes
-  int selectedCamera = 0;
+  // Camera properties
+  final int selectedCamera = 0;
+  final ResolutionPreset resolutionPreset = ResolutionPreset.medium;
+  final ImageFormatGroup imageFormatGroup = ImageFormatGroup.jpeg;
   // Create a key for drawer menu
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
@@ -79,20 +90,25 @@ class _CameraScreenState extends State<CameraScreen>
     'h_box': 0,
   };
 
-  initializeCamera(int cameraIndex) async {
+  initializeCamera() async {
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
-      widget.cameras[cameraIndex],
+      widget.cameras[selectedCamera],
       // Define the resolution to use.
-      ResolutionPreset.medium,
+      resolutionPreset,
+      // Define the image format to use.
+      imageFormatGroup: imageFormatGroup,
     );
 
-    // Next, initialize the controller. This returns a Future.
+    setState(() {
+          // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
 
     // Turn off flash by default
     _controller.setFlashMode(FlashMode.off);
+    });
   }
+  
 
   @override
   Widget build(BuildContext context) {
