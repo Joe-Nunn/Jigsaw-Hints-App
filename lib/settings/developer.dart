@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
-import 'package:jigsaw_hints/ui/dialogs/input_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/input_dialogs.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +27,7 @@ class _DeveloperSettingsState extends State<DeveloperSettings> {
     serverAddress = sharedPrefs.getString(SharedPrefsKeys.serverAddress.name) ??
         defaultServerAddress;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const JigsawAppBar(
         title: "Settings",
       ),

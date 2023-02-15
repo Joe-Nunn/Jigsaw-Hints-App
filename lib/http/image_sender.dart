@@ -45,7 +45,8 @@ class ImageSender {
       required String base,
       required String serverAddress,
       required String algorithmType,
-      required int hintAccuracy}) async {
+      required int hintAccuracy,
+      required int numberOfPieces}) async {
     final response = await http
         .post(
       Uri.parse("$serverAddress/process"),
@@ -57,6 +58,7 @@ class ImageSender {
         'base_data': base,
         'algorithm_type': algorithmType,
         'hint_accuracy': hintAccuracy.toString(),
+        'number_of_pieces': numberOfPieces.toString(),
       }),
     )
         .timeout(timeoutDuration, onTimeout: () {

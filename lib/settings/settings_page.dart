@@ -7,7 +7,7 @@ import 'package:jigsaw_hints/settings/accessibility.dart';
 import 'package:jigsaw_hints/settings/appearance.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/general.dart';
-import 'package:jigsaw_hints/ui/dialogs/input_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/input_dialogs.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
     sharedPrefs = context.watch<SharedPreferences>();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
@@ -75,11 +76,16 @@ class _SettingsPageState extends State<SettingsPage> {
               userName: userName,
               userProfilePic: const AssetImage("images/user_avatar.png"),
               onTap: () => showDialog(
-                      context: context,
-                      builder: ((context) => inputDialogText(
-                          context, sharedPrefs, SharedPrefsKeys.userName.name,
-                          titleText: "Enter your name")))
-                  .then((_) => setState(() {})),
+                context: context,
+                builder: ((context) => inputDialogText(
+                      context,
+                      sharedPrefs,
+                      SharedPrefsKeys.userName.name,
+                      titleText: "Enter your name",
+                      maxLength: 30,
+                      allowedCharacters: "[0-9a-zA-Z ]",
+                    )),
+              ).then((_) => setState(() {})),
             ),
             SettingsGroup(
               items: [

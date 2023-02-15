@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
-import 'package:jigsaw_hints/ui/dialogs/input_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/input_dialogs.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +26,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   Widget build(BuildContext context) {
     initUserData(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const JigsawAppBar(
         title: "Settings",
       ),

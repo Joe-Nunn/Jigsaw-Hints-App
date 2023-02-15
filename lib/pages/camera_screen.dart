@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/torch_provider.dart';
+import 'package:jigsaw_hints/ui/dialogs/image_preview_dialog.dart';
 import 'package:jigsaw_hints/ui/dialogs/jigsaw_piece_dialog.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
@@ -14,7 +15,6 @@ import 'package:showcaseview/showcaseview.dart';
 import '../utils/constants.dart';
 import '../ui/menus/drawer_menu.dart';
 import '../ui/overlays/guideline_box.dart';
-import '../ui/dialogs/info_dialog.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -140,6 +140,7 @@ class _CameraScreenState extends State<CameraScreen>
             builder: (context) {
               return SafeArea(
                 child: Scaffold(
+                  resizeToAvoidBottomInset: false,
                   key: _key,
                   appBar: const JigsawAppBar(title: "Camera"),
                   drawer: SizedBox(
@@ -256,7 +257,7 @@ class _CameraScreenState extends State<CameraScreen>
             if (camera.mode == CameraMode.box) {
               showDialog(
                   context: context,
-                  builder: (_) => imageDialog(context, path),
+                  builder: (_) => imagePreviewDialog(context, path),
                   barrierDismissible: false);
             } else if (camera.mode == CameraMode.piece) {
               // Send image to the server

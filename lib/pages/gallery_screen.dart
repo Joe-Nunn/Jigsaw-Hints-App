@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
-import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/utils/navigation_utils.dart';
@@ -32,10 +32,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
     });
   }
 
-  void usePicture(File image, BoxCoverProvider boxCover) async {
+  void usePicture(BoxCover boxCover, BoxCoverProvider boxCoverProvider) async {
     allowPop = false;
     Timer(const Duration(milliseconds: 800), () {
-      boxCover.boxCover = image;
+      boxCoverProvider.boxCover = boxCover;
       selectButtonController.success();
       Timer(const Duration(milliseconds: 400), () {
         Navigator.pop(context);
@@ -56,6 +56,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       child: Consumer2<ImagesProvider, BoxCoverProvider>(
         builder: (context, images, box, child) {
           return Scaffold(
+            resizeToAvoidBottomInset: false,
               appBar: const JigsawAppBar(
                 title: "Box Covers",
               ),
@@ -117,7 +118,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       crossAxisSpacing: 2,
       children: images.capturedImages.reversed
           .map((image) => GalleryPicture(
-              image: image,
+              image: image.file,
               onTap: () =>
                   selectPicture(images.capturedImages.indexOf(image) + 1),
               selected: selectedPictureIndex ==

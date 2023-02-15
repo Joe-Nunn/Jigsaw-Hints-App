@@ -24,6 +24,7 @@ class _AppearanceSettingsState extends State<AppearanceSettings> {
     sharedPrefs = context.watch<SharedPreferences>();
     isDarkMode = sharedPrefs.getBool(SharedPrefsKeys.darkMode.name) ?? defaultDarkMode;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const JigsawAppBar(
         title: "Settings",
       ),

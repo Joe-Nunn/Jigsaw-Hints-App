@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/settings/settings_page.dart';
 import 'package:jigsaw_hints/ui/animations/animations.dart';
-import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../../utils/constants.dart';
