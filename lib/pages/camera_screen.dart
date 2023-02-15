@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
+import 'package:jigsaw_hints/provider/torch_provider.dart';
 import 'package:jigsaw_hints/ui/dialogs/jigsaw_piece_dialog.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
@@ -32,6 +33,9 @@ class _CameraScreenState extends State<CameraScreen>
     // If the app is paused, and then resumed, reinitialize the camera controller
     if (state == AppLifecycleState.resumed) {
       _initializeControllerFuture = _controller.initialize();
+      if (Provider.of<TorchProvider>(context, listen: false).status) {
+        _controller.setFlashMode(FlashMode.torch);
+      }
     }
   }
 
@@ -57,7 +61,6 @@ class _CameraScreenState extends State<CameraScreen>
   late Future<void>
       _initializeControllerFuture; //Future to wait until camera initializes
   int selectedCamera = 0;
-  bool flashlightOn = false;
   // Create a key for drawer menu
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
@@ -242,31 +245,36 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   Widget flashButton(List<GlobalKey<State<StatefulWidget>>> keys) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Padding(
-        padding: const EdgeInsets.only(right: defaultContentPaddingMedium),
-        child: Showcase(
-          key: keys.elementAt(2),
-          description: 'Turn camera flash ON or OFF',
-          child: IconButton(
-            icon: Icon(
-              Icons.flash_on,
-              color: flashlightOn ? Colors.yellow : Colors.white,
-              size: defaultIconSize,
+    return Consumer<TorchProvider>(builder: (context, torch, child) {
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding: const EdgeInsets.only(right: defaultContentPaddingMedium),
+          child: Showcase(
+            key: keys.elementAt(2),
+            description: 'Turn camera flash ON or OFF',
+            child: IconButton(
+              icon: Icon(
+                Icons.flash_on,
+                color: torch.status ? Colors.yellow : Colors.white,
+                size: defaultIconSize,
+              ),
+              onPressed: () async {
+                setState(() {
+                  if (torch.status) {
+                    _controller.setFlashMode(FlashMode.off);
+                    torch.status = false;
+                  } else {
+                    _controller.setFlashMode(FlashMode.torch);
+                    torch.status = true;
+                  }
+                });
+              },
             ),
-            onPressed: () async {
-              flashlightOn
-                  ? _controller.setFlashMode(FlashMode.off)
-                  : _controller.setFlashMode(FlashMode.always);
-              setState(() {
-                flashlightOn = !flashlightOn;
-              });
-            },
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget bottomMenu(BuildContext context, List<GlobalKey> keys,
