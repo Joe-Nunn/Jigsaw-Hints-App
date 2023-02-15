@@ -185,19 +185,23 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
       if (snapshot.data!.statusCode != 200) {
         return [Container(), popButton(context)];
       }
+      GlobalKey toolTipKey = GlobalKey();
       return [
         Tooltip(
           showDuration: const Duration(seconds: 3),
+          key: toolTipKey,
+          triggerMode: TooltipTriggerMode.manual,
           message: "Pinch to zoom in 🤏",
-          child: GestureDetector(
-            child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.info_outline,
-                  color: Colors.blue,
-                  size: defaultIconSize / 1.5,
-                )),
-          ),
+          child: IconButton(
+              onPressed: () {
+                final toolTip = toolTipKey.currentState as TooltipState;
+                toolTip.ensureTooltipVisible();
+              },
+              icon: const Icon(
+                Icons.info_outline,
+                color: Colors.blue,
+                size: defaultIconSize / 1.5,
+              )),
         ),
         popButton(context)
       ];
