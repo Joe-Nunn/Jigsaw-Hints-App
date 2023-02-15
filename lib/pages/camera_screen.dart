@@ -289,7 +289,7 @@ class _CameraScreenState extends State<CameraScreen>
           padding: const EdgeInsets.only(right: defaultContentPaddingMedium),
           child: Showcase(
             key: keys.elementAt(2),
-            description: 'Turn camera flash ON or OFF',
+            description: 'Turn torch ON or OFF',
             child: IconButton(
               icon: Icon(
                 Icons.flash_on,
