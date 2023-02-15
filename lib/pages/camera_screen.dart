@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/torch_provider.dart';
 import 'package:jigsaw_hints/ui/dialogs/jigsaw_piece_dialog.dart';
@@ -74,6 +75,8 @@ class _CameraScreenState extends State<CameraScreen>
   final ImageFormatGroup imageFormatGroup = ImageFormatGroup.jpeg;
   // Create a key for drawer menu
   final GlobalKey<ScaffoldState> _key = GlobalKey();
+  // Flag to indicate if the camera is taking a picture
+  bool takingPicture = false;
 
   // Holds the position information of the guideline box
   final Map<String, double> _overlayPos = {
@@ -101,14 +104,13 @@ class _CameraScreenState extends State<CameraScreen>
     );
 
     setState(() {
-          // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller.initialize();
+      // Next, initialize the controller. This returns a Future.
+      _initializeControllerFuture = _controller.initialize();
 
-    // Turn off flash by default
-    _controller.setFlashMode(FlashMode.off);
+      // Turn off flash by default
+      _controller.setFlashMode(FlashMode.off);
     });
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +189,19 @@ class _CameraScreenState extends State<CameraScreen>
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           // If the Future is complete, display the preview.
-          return CameraPreview(_controller);
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              CameraPreview(_controller),
+              if (takingPicture)
+                const SpinKitSpinningLines(
+                  size: 100,
+                  lineWidth: 3.0,
+                  duration: Duration(milliseconds: 4000),
+                  color: Colors.white,
+                ),
+            ],
+          );
         } else {
           // Otherwise, display a loading indicator.
           return const Center(child: CircularProgressIndicator());
@@ -226,10 +240,16 @@ class _CameraScreenState extends State<CameraScreen>
         description: 'Take photo of a box or puzzle',
         child: ElevatedButton(
           onPressed: () async {
+            setState(() {
+              takingPicture = true;
+            });
             // Ensure that the camera is initialized.
             await _initializeControllerFuture;
             // Attempt to take a picture and get the file
             var xFile = await _controller.takePicture();
+            setState(() {
+              takingPicture = false;
+            });
             var path = xFile.path;
             if (!mounted) return;
             // If the box picture was taken, display it in a popup.
