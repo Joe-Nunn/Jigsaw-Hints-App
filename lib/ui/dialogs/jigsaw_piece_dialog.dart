@@ -114,7 +114,7 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
   Widget getContent(BuildContext context, AsyncSnapshot<Response> snapshot) {
     if (snapshot.hasData) {
       final statusCode = snapshot.data!.statusCode;
-      String body = snapshot.data!.body;
+      String body = snapshot.data?.body ?? "Empty response body";
       if (statusCode == 400) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -132,14 +132,13 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
         );
       } else {
         Map<String, dynamic> data = jsonDecode(body);
-        String base64Image = data["solved_data"];
+        String base64Image = data["solved_data"] ?? "No image data";
         return SolvedJigsawPuzzle(
           image: base64Image,
         );
       }
     } else if (snapshot.hasError) {
       String textToShow = "";
-      debugPrint("### ERROR ${snapshot.error.toString()}");
       if (snapshot.error is SocketException) {
         textToShow = "No Internet connection 😑";
       } else if (snapshot.error is HttpException) {
