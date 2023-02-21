@@ -1,8 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/provider/images.dart';
+import 'package:jigsaw_hints/provider/torch_provider.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,14 +14,19 @@ import '../settings/shared_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Ensure the app is launched in portrait mode
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   // Obtain a list of the available cameras on the device.
   final cameras = await availableCameras();
   // Ensure the SharedPreferences are initialized
   final sharedPrefs = await SharedPreferences.getInstance();
-  runApp(MultiProvider(providers: [
+  runApp(MultiProvider(providers: [ 
     Provider<SharedPreferencesProvider?>(
         create: (_) =>
-            SharedPreferencesProvider(SharedPreferences.getInstance())),
+            SharedPreferencesProvider(SharedPreferences.getInstance())), 
     StreamProvider(
         create: (context) =>
             context.read<SharedPreferencesProvider>().prefsState,
@@ -27,6 +34,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => CameraModeProvider()),
     ChangeNotifierProvider(create: (context) => ImagesProvider()),
     ChangeNotifierProvider(create: (context) => BoxCoverProvider()),
+    ChangeNotifierProvider(create: (context) => TorchProvider()),
   ], child: MyApp(cameras: cameras)));
 }
 
@@ -76,7 +84,7 @@ class _MyAppState extends State<MyApp> {
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,
           )),
-      themeMode: (sharedPrefs.getBool(darkModeKey) ?? defaultDarkMode)
+      themeMode: (sharedPrefs.getBool(SharedPrefsKeys.darkMode.name) ?? defaultDarkMode)
           ? ThemeMode.dark
           : ThemeMode.light,
       debugShowCheckedModeBanner: false,

@@ -22,8 +22,9 @@ class _AppearanceSettingsState extends State<AppearanceSettings> {
   @override
   Widget build(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
-    isDarkMode = sharedPrefs.getBool(darkModeKey) ?? defaultDarkMode;
+    isDarkMode = sharedPrefs.getBool(SharedPrefsKeys.darkMode.name) ?? defaultDarkMode;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const JigsawAppBar(
         title: "Settings",
       ),
@@ -48,7 +49,7 @@ class _AppearanceSettingsState extends State<AppearanceSettings> {
               onChanged: (value) {
                 setState(() {
                   isDarkMode = value;
-                  sharedPrefs.setBool(darkModeKey, value);
+                  sharedPrefs.setBool(SharedPrefsKeys.darkMode.name, value);
                   MyApp.of(context).setState(() {});
                 });
               },

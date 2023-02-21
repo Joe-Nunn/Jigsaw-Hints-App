@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/settings/developer.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/settings/about.dart';
 import 'package:jigsaw_hints/settings/accessibility.dart';
 import 'package:jigsaw_hints/settings/appearance.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/general.dart';
-import 'package:jigsaw_hints/ui/dialogs/input_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/input_dialogs.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
     sharedPrefs = context.watch<SharedPreferences>();
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black,
@@ -62,7 +64,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget settingTiles() {
-    var userName = sharedPrefs.getString(userNameKey) ?? defaultUserName;
+    var userName =
+        sharedPrefs.getString(SharedPrefsKeys.userName.name) ?? defaultUserName;
     return Padding(
         padding: const EdgeInsets.all(defaultContentPaddingBig),
         child: ListView(
@@ -73,31 +76,28 @@ class _SettingsPageState extends State<SettingsPage> {
               userName: userName,
               userProfilePic: const AssetImage("images/user_avatar.png"),
               onTap: () => showDialog(
-                      context: context,
-                      builder: ((context) => inputDialogText(
-                          context, sharedPrefs, userNameKey,
-                          titleText: "Enter your name")))
-                  .then((_) => setState(() {})),
+                context: context,
+                builder: ((context) => inputDialogText(
+                      context,
+                      sharedPrefs,
+                      SharedPrefsKeys.userName.name,
+                      titleText: "Enter your name",
+                      maxLength: 30,
+                      allowedCharacters: "[0-9a-zA-Z ]",
+                    )),
+              ).then((_) => setState(() {})),
             ),
             SettingsGroup(
               items: [
                 SettingsItem(
-                  onTap: () => Navigator.push(
-                      context,
-                      PageTransition(
-                          child: const GeneralSettings(),
-                          type: PageTransitionType.fade)),
+                  onTap: () => openSubPage(const GeneralSettings()),
                   icons: CupertinoIcons.settings,
                   iconStyle: IconStyle(backgroundColor: Colors.amber),
                   title: 'General',
                   subtitle: "Hint accuracy and more",
                 ),
                 SettingsItem(
-                  onTap: () => Navigator.push(
-                      context,
-                      PageTransition(
-                          child: const AppearanceSettings(),
-                          type: PageTransitionType.fade)),
+                  onTap: () => openSubPage(const AppearanceSettings()),
                   icons: CupertinoIcons.pencil_outline,
                   iconStyle: IconStyle(),
                   title: 'Appearance',
@@ -108,11 +108,7 @@ class _SettingsPageState extends State<SettingsPage> {
             SettingsGroup(
               items: [
                 SettingsItem(
-                  onTap: () => Navigator.push(
-                      context,
-                      PageTransition(
-                          child: const AccessibilitySettings(),
-                          type: PageTransitionType.fade)),
+                  onTap: () => openSubPage(const AccessibilitySettings()),
                   icons: Icons.accessibility_new,
                   iconStyle: IconStyle(
                     backgroundColor: Colors.indigo,
@@ -121,12 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   subtitle: "Configure to your needs",
                 ),
                 SettingsItem(
-                  onTap: () => Navigator.push(
-                          context,
-                          PageTransition(
-                              child: const AboutSettings(),
-                              type: PageTransitionType.fade))
-                      .then((_) => setState(() {})),
+                  onTap: () => openSubPage(const AboutSettings()),
                   icons: Icons.info_rounded,
                   iconStyle: IconStyle(
                     backgroundColor: Colors.purple,
@@ -134,6 +125,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: 'About',
                   subtitle: "Learn more about the App",
                 ),
+              ],
+            ),
+            SettingsGroup(
+              items: [
                 SettingsItem(
                   onTap: () => showDialog(
                       context: context,
@@ -146,9 +141,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: 'Send Feedback',
                   subtitle: "Help us improve the App",
                 ),
+                SettingsItem(
+                  onTap: () => openSubPage(const DeveloperSettings()),
+                  icons: Icons.code,
+                  iconStyle: IconStyle(
+                    backgroundColor: const Color.fromARGB(255, 126, 104, 92),
+                  ),
+                  title: 'Developer',
+                  subtitle: "Settings for the developers",
+                ),
               ],
             ),
           ],
         ));
+  }
+
+  Future<void> openSubPage(Widget page) {
+    return Navigator.push(
+            context, PageTransition(child: page, type: PageTransitionType.fade))
+        .then((_) => setState(() {}));
   }
 }

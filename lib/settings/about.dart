@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/app_version.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
-import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/main/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +17,7 @@ class _AboutSettingsState extends State<AboutSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: const JigsawAppBar(
         title: "Settings",
       ),

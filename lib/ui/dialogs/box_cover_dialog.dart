@@ -4,7 +4,7 @@ import 'package:jigsaw_hints/pages/gallery_screen.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/ui/animations/animations.dart';
-import 'package:jigsaw_hints/ui/dialogs/info_dialog.dart';
+import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_button/animated_button.dart';
@@ -65,7 +65,7 @@ Column boxSelectedContent(
         height: desiredPieceSize,
         child: Animate(
           child: Image.file(
-            boxCoverProvider.boxCover!,
+            boxCoverProvider.boxCover!.getFile,
             fit: BoxFit.cover,
           )
               .animate(
@@ -123,7 +123,7 @@ Column boxNotSelectedContent(BuildContext context) {
         height: desiredPieceSize / 1.5,
         child: Image.asset("images/jigsaw_box.png")
             .animate()
-            .shake(duration: 500.ms),
+            .shake(duration: 300.ms),
       ),
       imagesProvider.capturedImages.isEmpty
           ? AnimatedButton(
@@ -140,7 +140,7 @@ Column boxNotSelectedContent(BuildContext context) {
                       color: Colors.white,
                     ),
               ),
-            ).animate(delay: 500.ms).scale()
+            ).animate(delay: 300.ms).scale(duration: 200.ms)
           : AnimatedButton(
               onPressed: () {
                 Navigator.push(context, slideIn(const GalleryScreen()));
@@ -155,7 +155,7 @@ Column boxNotSelectedContent(BuildContext context) {
                       color: Colors.white,
                     ),
               ),
-            ).animate(delay: 500.ms).scale()
+            ).animate(delay: 300.ms).scale(duration: 200.ms)
     ],
   );
 }
