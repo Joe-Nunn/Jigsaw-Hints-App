@@ -1,1 +1,1 @@
-const currentJigsawHintsVersion = "1.6.0";
+const currentJigsawHintsVersion = "1.7.0";
