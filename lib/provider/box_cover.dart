@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:path_provider/path_provider.dart';
-
 class BoxCoverProvider extends ChangeNotifier {
   /// Currently used box cover.
   BoxCover? _boxCover;
@@ -22,52 +20,48 @@ class BoxCoverProvider extends ChangeNotifier {
 }
 
 class BoxCover {
-  final File file;
+  final File image;
   final int numberOfPieces;
-  String? fileName;
-  String? metaFileName;
-  String? dataDir;
+  String? imagePath;
+  String? metaFilePath;
 
-  BoxCover({required this.file, required this.numberOfPieces});
+  BoxCover(
+      {required this.image,
+      required this.numberOfPieces,
+      this.imagePath,
+      this.metaFilePath});
 
-  String get getFilePath => '$dataDir/$fileName';
-  String get getMetaFilePath => '$dataDir/$metaFileName';
-  File get getFile => file;
+  File get getImage => image;
   int get getNumberOfPieces => numberOfPieces;
 
   Future<void> save(Directory dataDir) async {
-    this.dataDir = dataDir.path;
     final data = <String, dynamic>{
       'numberOfPieces': numberOfPieces,
     };
     final meta = json.encode(data);
 
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    metaFileName = '$timestamp.meta';
-    final metaFile = File('${dataDir.path}/$metaFileName');
+    final metaFile = File('${dataDir.path}/$timestamp.meta');
     await metaFile.writeAsString(meta);
 
-    fileName = '$timestamp.jpg';
-    final pictureBytes = await file.readAsBytes();
-    await File('${dataDir.path}/$fileName').writeAsBytes(pictureBytes);
-  }
-
-  static Future<BoxCover> load(String path) async {
-    final file = File('$path.jpg');
-    final metaFile = File('$path.meta');
-
-    final meta = await metaFile.readAsString();
-    final data = json.decode(meta) as Map<String, dynamic>;
-    final numberOfPieces = data['numberOfPieces'] as int;
-
-    return BoxCover(file: file, numberOfPieces: numberOfPieces);
+    final pictureBytes = await image.readAsBytes();
+    await File('${dataDir.path}/$timestamp.jpg').writeAsBytes(pictureBytes);
   }
 
   Future<void> delete() async {
-    final metaFile = File(getMetaFilePath);
-    final imageFile = File(getFilePath);
+    final metaFile = File(imagePath!);
+    final imageFile = File(metaFilePath!);
 
     await metaFile.delete();
     await imageFile.delete();
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is BoxCover && image == other.image;
+  }
+
+  @override
+  int get hashCode => image.hashCode;
 }

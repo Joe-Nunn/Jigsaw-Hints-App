@@ -206,7 +206,10 @@ class _CameraScreenState extends State<CameraScreen>
           );
         } else {
           // Otherwise, display a loading indicator.
-          return Center(child: SpinKitThreeBounce());
+          return const Center(
+              child: SpinKitThreeBounce(
+            color: Colors.white,
+          ));
         }
       },
     );

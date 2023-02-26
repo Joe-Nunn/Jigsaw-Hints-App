@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
-Widget numberOfPiecesDialog(BuildContext context, XFile file) {
+Widget numberOfPiecesDialog(
+    BuildContext context, XFile file, Directory dataDir) {
   bool textFieldHasValidInput = false;
   final TextEditingController controller = TextEditingController();
   final GlobalKey toolTipKey = GlobalKey();
@@ -98,8 +98,7 @@ Widget numberOfPiecesDialog(BuildContext context, XFile file) {
               onPressed: () async {
                 int input = int.parse(controller.text);
                 var boxCover =
-                    BoxCover(file: File(file.path), numberOfPieces: input);
-                final dataDir = await getApplicationDocumentsDirectory();
+                    BoxCover(image: File(file.path), numberOfPieces: input);
                 boxCover.save(dataDir);
                 Provider.of<ImagesProvider>(context, listen: false)
                     .capturedImages
