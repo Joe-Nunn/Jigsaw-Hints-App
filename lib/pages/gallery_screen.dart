@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
@@ -21,6 +21,22 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
+  bool hasLoadedPictures = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPictures();
+  }
+
+  void loadPictures() async {
+    await Provider.of<ImagesProvider>(context, listen: false)
+        .loadImagesFromDisk();
+    setState(() {
+      hasLoadedPictures = true;
+    });
+  }
+
   final RoundedLoadingButtonController selectButtonController =
       RoundedLoadingButtonController();
   int selectedPictureIndex = 0;
@@ -56,7 +72,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       child: Consumer2<ImagesProvider, BoxCoverProvider>(
         builder: (context, images, box, child) {
           return Scaffold(
-            resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: false,
               appBar: const JigsawAppBar(
                 title: "Box Covers",
               ),
@@ -105,6 +121,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Widget body(context, ImagesProvider images, BoxCoverProvider box) {
+    if (!hasLoadedPictures) {
+      return Center(
+        child: SpinKitRipple(
+          color: Colors.grey[300],
+        ),
+      );
+    }
     return images.capturedImages.isEmpty
         ? emptyGallery(context)
         : selectableGallery(images, box);
