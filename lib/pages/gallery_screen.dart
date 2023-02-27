@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
+import 'package:jigsaw_hints/ui/dialogs/box_cover_dialog.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
@@ -23,6 +24,7 @@ class GalleryScreen extends StatefulWidget {
 class _GalleryScreenState extends State<GalleryScreen> {
   bool hasLoadedPictures = false;
   bool canUseDeleteButton = true;
+  bool canTap = true;
 
   @override
   void initState() {
@@ -50,12 +52,17 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   void usePicture(BoxCover boxCover, BoxCoverProvider boxCoverProvider) async {
-    allowPop = false;
+    setState(() {
+      allowPop = false;
+      canUseDeleteButton = false; // Disable delete button
+      canTap = false; // Disable tap
+    });
     Timer(const Duration(milliseconds: 800), () {
       boxCoverProvider.boxCover = boxCover;
       selectButtonController.success();
       Timer(const Duration(milliseconds: 400), () {
-        Navigator.pop(context);
+        NavigationUtils.popAll(context);
+        showBoxCoverDialog(context);
       });
     });
   }
@@ -78,7 +85,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
                 title: "Box Covers",
               ),
               body: GestureDetector(
-                  onTap: () => setState(() => selectedPictureIndex = 0),
+                  onTap: () =>
+                      setState(() => {if (canTap) selectedPictureIndex = 0}),
                   child: body(context, images, box)),
               floatingActionButton: selectedPictureIndex == 0
                   ? addNewPictureButton(box, context)
@@ -180,9 +188,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
       borderRadius: defaultDialogBorderRadiusBig,
       onPressed: () {
         setState(() {
-          canUseDeleteButton = false;
+          return usePicture(selectedBoxCover, box);
         });
-        return usePicture(selectedBoxCover, box);
       },
       child: Text(
         'Use Box Cover',
@@ -196,27 +203,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
   InkWell deleteButton(ImagesProvider images, BoxCoverProvider box) {
     final selectedBoxCover = images.capturedImages[selectedPictureIndex - 1];
     return InkWell(
-      onTap: () {
-        if (canUseDeleteButton) {
-          showInfoDialog(context,
-              title: "Removing saved box cover",
-              content: "Are you sure?",
-              titleBgColor: Colors.redAccent,
-              rightButton: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: popButton(context, text: "Yes", onPressed: () {
-                  // Delete picture
-                  selectedBoxCover.delete();
-                  box.boxCover = null;
-                  selectedPictureIndex = 0;
-                  // Remove from list
-                  images.removeImage(selectedBoxCover);
-                  Navigator.of(context).pop();
-                }),
-              ),
-              leftButton: popButton(context, text: "No"));
-        }
-      },
+      onTap: canUseDeleteButton
+          ? () => deleteBoxCoverAction(selectedBoxCover, box, images)
+          : null,
       child: Container(
         padding: const EdgeInsets.all(defaultContentPaddingMedium),
         decoration: BoxDecoration(
@@ -229,6 +218,27 @@ class _GalleryScreenState extends State<GalleryScreen> {
         ),
       ),
     );
+  }
+
+  void deleteBoxCoverAction(
+      BoxCover selectedBoxCover, BoxCoverProvider box, ImagesProvider images) {
+    showInfoDialog(context,
+        title: "Removing saved box cover",
+        content: "Are you sure?",
+        titleBgColor: Colors.redAccent,
+        rightButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: popButton(context, text: "Yes", onPressed: () {
+            // Delete picture
+            selectedBoxCover.delete();
+            box.boxCover = null;
+            selectedPictureIndex = 0;
+            // Remove from list
+            images.removeImage(selectedBoxCover);
+            Navigator.of(context).pop();
+          }),
+        ),
+        leftButton: popButton(context, text: "No"));
   }
 
   Widget emptyGallery(context) {
