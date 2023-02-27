@@ -55,6 +55,7 @@ class _CameraScreenState extends State<CameraScreen>
     initializeCamera();
     // Add the observer
     WidgetsBinding.instance.addObserver(this);
+    // Load images from disk
   }
 
   @override
@@ -205,7 +206,10 @@ class _CameraScreenState extends State<CameraScreen>
           );
         } else {
           // Otherwise, display a loading indicator.
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: SpinKitThreeBounce(
+            color: Colors.white,
+          ));
         }
       },
     );
@@ -257,7 +261,7 @@ class _CameraScreenState extends State<CameraScreen>
             if (camera.mode == CameraMode.box) {
               showDialog(
                   context: context,
-                  builder: (_) => imagePreviewDialog(context, path),
+                  builder: (_) => imagePreviewDialog(context, xFile),
                   barrierDismissible: false);
             } else if (camera.mode == CameraMode.piece) {
               // Send image to the server

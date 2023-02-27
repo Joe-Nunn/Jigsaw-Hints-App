@@ -44,7 +44,7 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
       String serverAddress, String algorithmType, int hintAccuracy) async {
     return imageSender.sendImageToFlask(
       piece: ImageConverter.encodeToBase64(widget.piece),
-      base: ImageConverter.encodeToBase64(widget.base.getFile),
+      base: ImageConverter.encodeToBase64(widget.base.getImage),
       serverAddress: serverAddress,
       algorithmType: algorithmType,
       hintAccuracy: hintAccuracy,

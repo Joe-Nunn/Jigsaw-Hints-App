@@ -65,7 +65,7 @@ Column boxSelectedContent(
         height: desiredPieceSize,
         child: Animate(
           child: Image.file(
-            boxCoverProvider.boxCover!.getFile,
+            boxCoverProvider.boxCover!.getImage,
             fit: BoxFit.cover,
           )
               .animate(

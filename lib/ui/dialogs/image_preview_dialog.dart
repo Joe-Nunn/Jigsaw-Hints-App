@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:jigsaw_hints/ui/dialogs/number_of_pieces_dialog.dart';
+import 'package:path_provider/path_provider.dart';
 
-Widget imagePreviewDialog(BuildContext context, String path) {
+Widget imagePreviewDialog(BuildContext context, XFile file) {
   return Dialog(
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -29,11 +31,12 @@ Widget imagePreviewDialog(BuildContext context, String path) {
                 ),
               ),
               ElevatedButton.icon(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.of(context).pop();
+                  final dataDir = await getApplicationDocumentsDirectory();
                   showDialog(
                   context: context,
-                  builder: (_) => numberOfPiecesDialog(context, path),
+                  builder: (_) => numberOfPiecesDialog(context, file, dataDir),
                   barrierDismissible: false);
                 },
                 icon: const Icon(Icons.check_rounded),
@@ -51,7 +54,7 @@ Widget imagePreviewDialog(BuildContext context, String path) {
           ),
         ),
         Image.file(
-          File(path),
+          File(file.path),
           fit: BoxFit.cover,
         ),
       ],

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -18,11 +20,48 @@ class BoxCoverProvider extends ChangeNotifier {
 }
 
 class BoxCover {
-  final File file;
+  final File image;
   final int numberOfPieces;
+  String? imagePath;
+  String? metaFilePath;
 
-  BoxCover({required this.file, required this.numberOfPieces});
+  BoxCover(
+      {required this.image,
+      required this.numberOfPieces,
+      this.imagePath,
+      this.metaFilePath});
 
-  File get getFile => file;
+  File get getImage => image;
   int get getNumberOfPieces => numberOfPieces;
+
+  Future<void> save(Directory dataDir) async {
+    final data = <String, dynamic>{
+      'numberOfPieces': numberOfPieces,
+    };
+    final meta = json.encode(data);
+
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final metaFile = File('${dataDir.path}/$timestamp.meta');
+    await metaFile.writeAsString(meta);
+
+    final pictureBytes = await image.readAsBytes();
+    await File('${dataDir.path}/$timestamp.jpg').writeAsBytes(pictureBytes);
+  }
+
+  Future<void> delete() async {
+    final metaFile = File(imagePath!);
+    final imageFile = File(metaFilePath!);
+
+    await metaFile.delete();
+    await imageFile.delete();
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is BoxCover && image == other.image;
+  }
+
+  @override
+  int get hashCode => image.hashCode;
 }

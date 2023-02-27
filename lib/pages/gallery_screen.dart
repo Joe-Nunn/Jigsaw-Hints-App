@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
+import 'package:jigsaw_hints/ui/dialogs/box_cover_dialog.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
@@ -21,6 +22,24 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
+  bool hasLoadedPictures = false;
+  bool canUseDeleteButton = true;
+  bool canTap = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPictures();
+  }
+
+  void loadPictures() async {
+    await Provider.of<ImagesProvider>(context, listen: false)
+        .loadImagesFromDisk();
+    setState(() {
+      hasLoadedPictures = true;
+    });
+  }
+
   final RoundedLoadingButtonController selectButtonController =
       RoundedLoadingButtonController();
   int selectedPictureIndex = 0;
@@ -33,12 +52,17 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   void usePicture(BoxCover boxCover, BoxCoverProvider boxCoverProvider) async {
-    allowPop = false;
+    setState(() {
+      allowPop = false;
+      canUseDeleteButton = false; // Disable delete button
+      canTap = false; // Disable tap
+    });
     Timer(const Duration(milliseconds: 800), () {
       boxCoverProvider.boxCover = boxCover;
       selectButtonController.success();
       Timer(const Duration(milliseconds: 400), () {
-        Navigator.pop(context);
+        NavigationUtils.popAll(context);
+        showBoxCoverDialog(context);
       });
     });
   }
@@ -56,16 +80,17 @@ class _GalleryScreenState extends State<GalleryScreen> {
       child: Consumer2<ImagesProvider, BoxCoverProvider>(
         builder: (context, images, box, child) {
           return Scaffold(
-            resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: false,
               appBar: const JigsawAppBar(
                 title: "Box Covers",
               ),
               body: GestureDetector(
-                  onTap: () => setState(() => selectedPictureIndex = 0),
+                  onTap: () =>
+                      setState(() => {if (canTap) selectedPictureIndex = 0}),
                   child: body(context, images, box)),
               floatingActionButton: selectedPictureIndex == 0
                   ? addNewPictureButton(box, context)
-                  : usePictureButton(images, box),
+                  : pictureActionButtons(images, box),
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerFloat);
         },
@@ -105,9 +130,16 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Widget body(context, ImagesProvider images, BoxCoverProvider box) {
-    return images.capturedImages.isEmpty
-        ? emptyGallery(context)
-        : selectableGallery(images, box);
+    if (hasLoadedPictures) {
+      return images.capturedImages.isEmpty
+          ? emptyGallery(context)
+          : selectableGallery(images, box);
+    }
+    return Center(
+      child: SpinKitRipple(
+        color: Colors.grey[300],
+      ),
+    );
   }
 
   Widget selectableGallery(ImagesProvider images, BoxCoverProvider box) {
@@ -118,7 +150,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       crossAxisSpacing: 2,
       children: images.capturedImages.reversed
           .map((image) => GalleryPicture(
-              image: image.file,
+              image: image.image,
               onTap: () =>
                   selectPicture(images.capturedImages.indexOf(image) + 1),
               selected: selectedPictureIndex ==
@@ -127,27 +159,86 @@ class _GalleryScreenState extends State<GalleryScreen> {
     ).animate().fadeIn(duration: 500.ms).then().shimmer();
   }
 
-  Widget usePictureButton(ImagesProvider images, BoxCoverProvider box) {
+  Widget pictureActionButtons(ImagesProvider images, BoxCoverProvider box) {
     return Padding(
       padding: const EdgeInsets.all(defaultContentPaddingBig),
       child: Animate(
-        child: RoundedLoadingButton(
-          successIcon: Icons.extension,
-          controller: selectButtonController,
-          color: themeLightBlue,
-          successColor: Colors.green,
-          borderRadius: 15,
-          onPressed: () => usePicture(
-              images.capturedImages.elementAt(selectedPictureIndex - 1), box),
-          child: Text(
-            'Use This Box Cover',
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: Colors.white,
-                ),
-          ),
-        ).animate().flip(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            deleteButton(images, box).animate().flip(),
+            const SizedBox(
+              width: defaultWhitespaceSmall,
+            ),
+            usePictureButton(images, box).animate().flip(),
+          ],
+        ),
       ),
     );
+  }
+
+  RoundedLoadingButton usePictureButton(
+      ImagesProvider images, BoxCoverProvider box) {
+    final selectedBoxCover = images.capturedImages[selectedPictureIndex - 1];
+    return RoundedLoadingButton(
+      successIcon: Icons.extension,
+      controller: selectButtonController,
+      color: themeLightBlue,
+      successColor: Colors.green,
+      borderRadius: defaultDialogBorderRadiusBig,
+      onPressed: () {
+        setState(() {
+          return usePicture(selectedBoxCover, box);
+        });
+      },
+      child: Text(
+        'Use Box Cover',
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: Colors.white,
+            ),
+      ),
+    );
+  }
+
+  InkWell deleteButton(ImagesProvider images, BoxCoverProvider box) {
+    final selectedBoxCover = images.capturedImages[selectedPictureIndex - 1];
+    return InkWell(
+      onTap: canUseDeleteButton
+          ? () => deleteBoxCoverAction(selectedBoxCover, box, images)
+          : null,
+      child: Container(
+        padding: const EdgeInsets.all(defaultContentPaddingMedium),
+        decoration: BoxDecoration(
+          color: themeLightRed,
+          borderRadius: BorderRadius.circular(defaultDialogBorderRadiusBig),
+        ),
+        child: const Icon(
+          Icons.delete_forever,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  void deleteBoxCoverAction(
+      BoxCover selectedBoxCover, BoxCoverProvider box, ImagesProvider images) {
+    showInfoDialog(context,
+        title: "Removing saved box cover",
+        content: "Are you sure?",
+        titleBgColor: Colors.redAccent,
+        rightButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: popButton(context, text: "Yes", onPressed: () {
+            // Delete picture
+            selectedBoxCover.delete();
+            box.boxCover = null;
+            selectedPictureIndex = 0;
+            // Remove from list
+            images.removeImage(selectedBoxCover);
+            Navigator.of(context).pop();
+          }),
+        ),
+        leftButton: popButton(context, text: "No"));
   }
 
   Widget emptyGallery(context) {
