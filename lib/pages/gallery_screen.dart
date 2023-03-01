@@ -53,13 +53,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    // Hide the status bar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
@@ -209,7 +202,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   void deleteBoxCoverAction(
       BoxCover selectedBoxCover, BoxCoverProvider box, ImagesProvider images) {
     showInfoDialog(context,
-        title: "Removing saved box cover",
+        title: "Deleting box cover",
         content: "Are you sure?",
         titleBgColor: Colors.redAccent,
         rightButton: Padding(

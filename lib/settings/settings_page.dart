@@ -23,14 +23,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-
-  @override
-  void initState() {
-    super.initState();
-     // Hide the status bar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  }
-
   late SharedPreferences sharedPrefs;
 
   @override
@@ -94,7 +86,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       maxLength: 30,
                       allowedCharacters: "[0-9a-zA-Z ]",
                     )),
-              ).then((_) => setState(() {})),
+              ).then((_) => setState(() {
+                    SystemChrome.setEnabledSystemUIMode(
+                        SystemUiMode.immersiveSticky);
+                  })),
             ),
             SettingsGroup(
               items: [
@@ -142,7 +137,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () => showDialog(
                       context: context,
                       builder: ((context) =>
-                          inputDialogTextBox(titleText: "Feedback Form"))),
+                          inputDialogTextBox(titleText: "Feedback Form"))).then(
+                      (value) => SystemChrome.setEnabledSystemUIMode(
+                          SystemUiMode.immersiveSticky)),
                   icons: Icons.mail,
                   iconStyle: IconStyle(
                     backgroundColor: const Color.fromARGB(255, 175, 175, 175),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:jigsaw_hints/ui/dialogs/input_dialogs.dart';
@@ -64,8 +65,11 @@ class _DeveloperSettingsState extends State<DeveloperSettings> {
                   context: context,
                   builder: ((context) => inputDialogText(
                       context, sharedPrefs, SharedPrefsKeys.serverAddress.name,
-                      titleText: "Enter server address"))).then(
-                  (_) => setState(() {})),
+                      titleText:
+                          "Enter server address"))).then((_) => setState(() {
+                    SystemChrome.setEnabledSystemUIMode(
+                        SystemUiMode.immersiveSticky);
+                  })),
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.20,
                 child: Marquee(
