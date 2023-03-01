@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
@@ -114,11 +115,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Widget body(context, ImagesProvider images, BoxCoverProvider box) {
-      return images.capturedImages.isEmpty
-          ? emptyGallery(context)
-          : selectableGallery(images, box);
-    }
-
+    return images.capturedImages.isEmpty
+        ? emptyGallery(context)
+        : selectableGallery(images, box);
+  }
 
   Widget selectableGallery(ImagesProvider images, BoxCoverProvider box) {
     return GridView.count(
@@ -159,6 +159,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ImagesProvider images, BoxCoverProvider box) {
     final selectedBoxCover = images.capturedImages[selectedPictureIndex - 1];
     return RoundedLoadingButton(
+      width: MediaQuery.of(context).size.width * 0.6,
       successIcon: Icons.extension,
       controller: selectButtonController,
       color: themeLightBlue,
@@ -201,7 +202,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   void deleteBoxCoverAction(
       BoxCover selectedBoxCover, BoxCoverProvider box, ImagesProvider images) {
     showInfoDialog(context,
-        title: "Removing saved box cover",
+        title: "Deleting box cover",
         content: "Are you sure?",
         titleBgColor: Colors.redAccent,
         rightButton: Padding(

@@ -14,6 +14,7 @@ import '../settings/shared_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // Ensure the app is launched in portrait mode
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -23,10 +24,10 @@ void main() async {
   final cameras = await availableCameras();
   // Ensure the SharedPreferences are initialized
   final sharedPrefs = await SharedPreferences.getInstance();
-  runApp(MultiProvider(providers: [ 
+  runApp(MultiProvider(providers: [
     Provider<SharedPreferencesProvider?>(
         create: (_) =>
-            SharedPreferencesProvider(SharedPreferences.getInstance())), 
+            SharedPreferencesProvider(SharedPreferences.getInstance())),
     StreamProvider(
         create: (context) =>
             context.read<SharedPreferencesProvider>().prefsState,
@@ -84,7 +85,8 @@ class _MyAppState extends State<MyApp> {
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,
           )),
-      themeMode: (sharedPrefs.getBool(SharedPrefsKeys.darkMode.name) ?? defaultDarkMode)
+      themeMode: (sharedPrefs.getBool(SharedPrefsKeys.darkMode.name) ??
+              defaultDarkMode)
           ? ThemeMode.dark
           : ThemeMode.light,
       debugShowCheckedModeBanner: false,

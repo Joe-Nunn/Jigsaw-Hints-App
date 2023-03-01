@@ -117,11 +117,12 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
       String body = snapshot.data?.body ?? "Empty response body";
       if (statusCode == 400) {
         return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: const [
-            Text("Puzzle couldn't be solved 🤔"),
-            Text("Please try again 🧩"),
+            Text("The server could not solve the puzzle 😔"),
+            SizedBox(height: defaultContentPaddingMedium),
+            Text("Please try again 🤓"),
           ],
         );
       } else if (statusCode != 200 || body.isEmpty || !bodyIsValidJson(body)) {
@@ -192,7 +193,8 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
           showDuration: const Duration(seconds: 3),
           key: toolTipKey,
           triggerMode: TooltipTriggerMode.manual,
-          message: "Tap the image to enlarge it 🔎\nThen pinch to zoom in 🤏",
+          message:
+              "Tap the image to open it in fullscreen 🔎\nThen you can zoom in 👆 and rotate 🔄",
           child: IconButton(
               onPressed: () {
                 final toolTip = toolTipKey.currentState as TooltipState;

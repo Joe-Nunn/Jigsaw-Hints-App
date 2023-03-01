@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jigsaw_hints/settings/developer.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/settings/about.dart';
@@ -85,7 +86,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       maxLength: 30,
                       allowedCharacters: "[0-9a-zA-Z ]",
                     )),
-              ).then((_) => setState(() {})),
+              ).then((_) => setState(() {
+                    SystemChrome.setEnabledSystemUIMode(
+                        SystemUiMode.immersiveSticky);
+                  })),
             ),
             SettingsGroup(
               items: [
@@ -133,7 +137,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () => showDialog(
                       context: context,
                       builder: ((context) =>
-                          inputDialogTextBox(titleText: "Feedback Form"))),
+                          inputDialogTextBox(titleText: "Feedback Form"))).then(
+                      (value) => SystemChrome.setEnabledSystemUIMode(
+                          SystemUiMode.immersiveSticky)),
                   icons: Icons.mail,
                   iconStyle: IconStyle(
                     backgroundColor: const Color.fromARGB(255, 175, 175, 175),
