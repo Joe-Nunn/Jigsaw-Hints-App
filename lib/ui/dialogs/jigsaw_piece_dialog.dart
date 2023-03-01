@@ -165,11 +165,11 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
                 onComplete: (controller) => controller.repeat(),
               )
               .then(delay: 3.seconds)
-              .tint(duration: 2.seconds, color: Colors.red, end: 0.3)
-              .then(delay: 3.seconds)
               .tint(duration: 2.seconds, color: Colors.green, end: 0.3)
               .then(delay: 3.seconds)
               .tint(duration: 2.seconds, color: Colors.blue, end: 0.3)
+              .then(delay: 3.seconds)
+              .tint(duration: 2.seconds, color: Colors.red, end: 0.3)
               .then(delay: 3.seconds));
     }
     return const SpinKitFadingCircle(
