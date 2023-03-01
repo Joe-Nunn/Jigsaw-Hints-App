@@ -23,3 +23,4 @@ const double desiredBoxSizeWidth = 560.0;
 const double desiredBoxSizeHeight = 315.0;
 const double defaultIconSize = 40.0;
 const double defaultWhitespaceSmall = 20.0;
+const double defaultCameraPreviewRatio = 1.44;

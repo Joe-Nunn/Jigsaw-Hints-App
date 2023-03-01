@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
@@ -49,6 +50,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
         showBoxCoverDialog(context);
       });
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Hide the status bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override
@@ -114,11 +122,10 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Widget body(context, ImagesProvider images, BoxCoverProvider box) {
-      return images.capturedImages.isEmpty
-          ? emptyGallery(context)
-          : selectableGallery(images, box);
-    }
-
+    return images.capturedImages.isEmpty
+        ? emptyGallery(context)
+        : selectableGallery(images, box);
+  }
 
   Widget selectableGallery(ImagesProvider images, BoxCoverProvider box) {
     return GridView.count(

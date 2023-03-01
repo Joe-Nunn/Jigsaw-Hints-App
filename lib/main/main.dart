@@ -14,8 +14,7 @@ import '../settings/shared_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // Ensure the app is launched in portrait mode
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

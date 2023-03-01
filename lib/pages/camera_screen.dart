@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
@@ -46,6 +47,8 @@ class _CameraScreenState extends State<CameraScreen>
       if (Provider.of<TorchProvider>(context, listen: false).status) {
         _controller.setFlashMode(FlashMode.torch);
       }
+       // Hide the status bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);  
     }
   }
 
@@ -56,7 +59,8 @@ class _CameraScreenState extends State<CameraScreen>
     initializeCamera();
     // Add the observer
     WidgetsBinding.instance.addObserver(this);
-    // Load images from disk
+    // Hide the status bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
   @override
@@ -129,7 +133,8 @@ class _CameraScreenState extends State<CameraScreen>
     _overlayPos['y'] =
         MediaQuery.of(context).size.height / 2 - desiredPieceSize;
     _overlaySize['w_box'] = MediaQuery.of(context).size.width;
-    _overlaySize['h_box'] = MediaQuery.of(context).size.height / 1.44;
+    _overlaySize['h_box'] =
+        MediaQuery.of(context).size.height / defaultCameraPreviewRatio;
 
     return Consumer2<CameraModeProvider, BoxCoverProvider>(
       builder: (context, cameraMode, box, child) {
@@ -177,7 +182,11 @@ class _CameraScreenState extends State<CameraScreen>
     return Consumer<BoxCoverProvider>(builder: (context, box, child) {
       return Column(
         children: [
-          cameraPreview(),
+          SizedBox(
+              height: MediaQuery.of(context).size.height /
+                  defaultCameraPreviewRatio,
+              width: MediaQuery.of(context).size.width,
+              child: cameraPreview()),
           bottomMenu(context, keys, camera, box),
         ],
       );
@@ -246,7 +255,7 @@ class _CameraScreenState extends State<CameraScreen>
       child: Showcase(
         key: keys.elementAt(1),
         description: 'Take photo of a box or puzzle',
-        child: ElevatedButton(
+        child: TextButton(
           onPressed: () async {
             setState(() {
               takingPicture = true;
@@ -278,11 +287,15 @@ class _CameraScreenState extends State<CameraScreen>
               );
             }
           },
-          style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(32),
-              foregroundColor: Theme.of(context).colorScheme.secondary),
-          child: const SizedBox(),
+          style: TextButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            shape: const CircleBorder(),
+          ),
+          child: Icon(
+            Icons.circle,
+            color: Theme.of(context).colorScheme.primary,
+            size: defaultIconSize,
+          ),
         ),
       ),
     );
