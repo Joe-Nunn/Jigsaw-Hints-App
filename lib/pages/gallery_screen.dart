@@ -166,6 +166,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       ImagesProvider images, BoxCoverProvider box) {
     final selectedBoxCover = images.capturedImages[selectedPictureIndex - 1];
     return RoundedLoadingButton(
+      width: MediaQuery.of(context).size.width * 0.6,
       successIcon: Icons.extension,
       controller: selectButtonController,
       color: themeLightBlue,
