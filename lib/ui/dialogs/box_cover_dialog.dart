@@ -82,12 +82,22 @@ Column boxSelectedContent(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            children: const [Text("📡 Server: Connected "), Icon(Icons.wifi)],
+            children: [
+              Flexible(
+                  child: Text(
+                "📡 Server: Connected ",
+                style: Theme.of(context).textTheme.bodyMedium,
+              )),
+              const Icon(Icons.wifi)
+            ],
           ),
           Row(
             children: [
-              const Text(
-                "🧠 AI Model: Active ",
+              Flexible(
+                child: Text(
+                  "🧠 AI Model: Active ",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
               const Icon(
                 Icons.circle,
@@ -132,7 +142,7 @@ Column boxNotSelectedContent(BuildContext context) {
               }, // Callback for onTap event
               duration: 100, // Animaton duration
               height: 60, // Button Height
-              width: 160, // Button width
+              width: MediaQuery.of(context).size.width / 2, // Button width
               color: Colors.blue,
               child: Text(
                 "Take picture",
@@ -147,7 +157,7 @@ Column boxNotSelectedContent(BuildContext context) {
               }, // Callback for onTap event
               duration: 100, // Animaton duration
               height: 60, // Button Height
-              width: 200, // Button width
+              width: MediaQuery.of(context).size.width / 2, // Button width
               color: themeLightBlue,
               child: Text(
                 "Select box cover",
