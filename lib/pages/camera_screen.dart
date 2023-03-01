@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
+import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/provider/torch_provider.dart';
 import 'package:jigsaw_hints/ui/dialogs/image_preview_dialog.dart';
 import 'package:jigsaw_hints/ui/dialogs/jigsaw_piece_dialog.dart';
@@ -83,8 +84,6 @@ class _CameraScreenState extends State<CameraScreen>
   final Map<String, double> _overlayPos = {
     'x': 0,
     'y': 0,
-    'w': desiredPieceSize,
-    'h': desiredPieceSize,
   };
 
   final Map<String, double> _overlaySize = {
@@ -217,6 +216,7 @@ class _CameraScreenState extends State<CameraScreen>
 
   Widget boxCoverButton(List<GlobalKey<State<StatefulWidget>>> keys,
       BuildContext context, BoxCoverProvider box) {
+    ImagesProvider images = Provider.of<ImagesProvider>(context, listen: false);
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
@@ -225,7 +225,10 @@ class _CameraScreenState extends State<CameraScreen>
           key: keys.elementAt(0),
           description: 'Select the box cover to work with',
           child: IconButton(
-            onPressed: () => showBoxCoverDialog(context),
+            onPressed: () async => {
+              if (images.capturedImages.isEmpty) images.loadImagesFromDisk(),
+              showBoxCoverDialog(context)
+            },
             icon: Icon(
               Icons.settings_system_daydream,
               color: box.boxCover == null ? Colors.white : Colors.green,

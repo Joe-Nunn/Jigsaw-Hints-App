@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/settings/settings_page.dart';
 import 'package:jigsaw_hints/ui/animations/animations.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
+import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../../utils/constants.dart';
@@ -14,6 +16,7 @@ class DrawerMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ImagesProvider images = Provider.of<ImagesProvider>(context, listen: false);
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.surface.withOpacity(0.9),
       child: ListView(
@@ -37,6 +40,7 @@ class DrawerMenu extends StatelessWidget {
             ),
             title: const MenuText('Box Covers'),
             onTap: () {
+              if (images.capturedImages.isEmpty) images.loadImagesFromDisk();
               Navigator.push(context, slideIn(const GalleryScreen()));
             },
           ),

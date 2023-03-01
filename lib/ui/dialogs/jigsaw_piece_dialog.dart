@@ -140,7 +140,7 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
     } else if (snapshot.hasError) {
       String textToShow = "";
       if (snapshot.error is SocketException) {
-        textToShow = "No Internet connection 😑";
+        textToShow = "Could not connect to the server 😑";
       } else if (snapshot.error is HttpException) {
         textToShow = "Could not find the host 😱";
       } else if (snapshot.error is FormatException) {
@@ -165,11 +165,11 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
                 onComplete: (controller) => controller.repeat(),
               )
               .then(delay: 3.seconds)
-              .tint(duration: 2.seconds, color: Colors.red, end: 0.3)
-              .then(delay: 3.seconds)
               .tint(duration: 2.seconds, color: Colors.green, end: 0.3)
               .then(delay: 3.seconds)
               .tint(duration: 2.seconds, color: Colors.blue, end: 0.3)
+              .then(delay: 3.seconds)
+              .tint(duration: 2.seconds, color: Colors.red, end: 0.3)
               .then(delay: 3.seconds));
     }
     return const SpinKitFadingCircle(
@@ -192,7 +192,7 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
           showDuration: const Duration(seconds: 3),
           key: toolTipKey,
           triggerMode: TooltipTriggerMode.manual,
-          message: "Pinch to zoom in 🤏",
+          message: "Tap the image to enlarge it 🔎\nThen pinch to zoom in 🤏",
           child: IconButton(
               onPressed: () {
                 final toolTip = toolTipKey.currentState as TooltipState;

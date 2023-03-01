@@ -35,9 +35,10 @@ Widget imagePreviewDialog(BuildContext context, XFile file) {
                   Navigator.of(context).pop();
                   final dataDir = await getApplicationDocumentsDirectory();
                   showDialog(
-                  context: context,
-                  builder: (_) => numberOfPiecesDialog(context, file, dataDir),
-                  barrierDismissible: false);
+                      context: context,
+                      builder: (_) =>
+                          numberOfPiecesDialog(context, file, dataDir),
+                      barrierDismissible: false);
                 },
                 icon: const Icon(Icons.check_rounded),
                 label: const Text("Accept"),
@@ -55,7 +56,7 @@ Widget imagePreviewDialog(BuildContext context, XFile file) {
         ),
         Image.file(
           File(file.path),
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
         ),
       ],
     ),
