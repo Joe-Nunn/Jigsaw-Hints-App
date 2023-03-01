@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
@@ -22,23 +21,8 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
-  bool hasLoadedPictures = false;
   bool canUseDeleteButton = true;
   bool canTap = true;
-
-  @override
-  void initState() {
-    super.initState();
-    loadPictures();
-  }
-
-  void loadPictures() async {
-    await Provider.of<ImagesProvider>(context, listen: false)
-        .loadImagesFromDisk();
-    setState(() {
-      hasLoadedPictures = true;
-    });
-  }
 
   final RoundedLoadingButtonController selectButtonController =
       RoundedLoadingButtonController();
@@ -130,17 +114,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Widget body(context, ImagesProvider images, BoxCoverProvider box) {
-    if (hasLoadedPictures) {
       return images.capturedImages.isEmpty
           ? emptyGallery(context)
           : selectableGallery(images, box);
     }
-    return Center(
-      child: SpinKitRipple(
-        color: Colors.grey[300],
-      ),
-    );
-  }
+
 
   Widget selectableGallery(ImagesProvider images, BoxCoverProvider box) {
     return GridView.count(
