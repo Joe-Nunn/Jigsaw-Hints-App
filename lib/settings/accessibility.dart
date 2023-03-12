@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/main/main.dart';
 import 'package:jigsaw_hints/pages/widgets/accessibility_statement.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
@@ -41,6 +42,7 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
     sharedPrefs = context.watch<SharedPreferences>();
     fontSize =
         sharedPrefs.getInt(SharedPrefsKeys.fontSize.name) ?? defaultFontSize;
+    print("------------------------------------- $fontSize");
   }
 
   List<Widget> get settingsTiles => [
@@ -74,7 +76,9 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
                   SharedPrefsKeys.fontSize.name,
                   fontSize,
                   FontSize.values,
-                  titleText: "Font Size")).then((_) => setState(() {})),
+                  titleText: "Font Size")).then((_) => setState(() {
+                MyApp.of(context).setState(() {});
+              })),
         ),
         // Accessibility statemend
         ListTile(

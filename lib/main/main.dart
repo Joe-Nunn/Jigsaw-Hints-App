@@ -59,6 +59,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
+    int fontSize =
+        sharedPrefs.getInt(SharedPrefsKeys.fontSize.name) ?? defaultFontSize;
+    double fontSizeMultiplier;
+    if (fontSize == 0) {
+      fontSizeMultiplier = 0.5;
+    } else if (fontSize == 1) {
+      fontSizeMultiplier = 1.0;
+    } else if (fontSize == 2) {
+      fontSizeMultiplier = 1.5;
+    } else {
+      fontSizeMultiplier = 1.0;
+    }
     return MaterialApp(
       title: 'Jigsaw Puzzle Solver',
       theme: ThemeData(
@@ -68,23 +80,31 @@ class _MyAppState extends State<MyApp> {
             secondary: constants.secondaryColour,
             tertiary: constants.tertiaryColour,
           ),
-          textTheme: const TextTheme(
-            labelMedium: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
-            titleMedium: TextStyle(fontSize: 20, fontFamily: 'Rubik'),
-            bodyMedium: TextStyle(fontSize: 16, fontFamily: 'Rubik'),
-            bodyLarge: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
+          textTheme: TextTheme(
+            labelMedium:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            titleMedium:
+                TextStyle(fontSize: 20.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            bodyMedium:
+                TextStyle(fontSize: 16.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            bodyLarge:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
           ),
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,
           )),
       darkTheme: ThemeData.dark().copyWith(
-          textTheme: const TextTheme(
-            labelMedium: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
+          textTheme: TextTheme(
+            labelMedium:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
             titleMedium: TextStyle(
-                fontSize: 20,
+                fontSize: 20.0 * fontSizeMultiplier,
                 fontFamily: 'Rubik',
-                color: Color.fromARGB(255, 138, 138, 138)),
-            bodyMedium: TextStyle(fontSize: 16, fontFamily: 'Rubik'),
+                color: const Color(0xFF8A8A8A)),
+            bodyMedium:
+                TextStyle(fontSize: 16.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            bodyLarge:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
           ),
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,
