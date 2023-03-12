@@ -133,7 +133,10 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
         );
       } else {
         Map<String, dynamic> data = jsonDecode(body);
-        String base64Image = data["solved_data"] ?? "No image data";
+        String? base64Image = data["solved_data"];
+        if (base64Image == null) {
+          return const Text("No image data!");
+        }
         return SolvedJigsawPuzzle(
           image: base64Image,
         );
