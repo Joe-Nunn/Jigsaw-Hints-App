@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:jigsaw_hints/pages/widgets/accessibility_statement.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
 import 'package:jigsaw_hints/ui/dialogs/input_dialogs.dart';
 import 'package:jigsaw_hints/settings/shared_prefs.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,7 +39,8 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
 
   void initUserData(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
-    fontSize = sharedPrefs.getInt(SharedPrefsKeys.fontSize.name) ?? defaultFontSize;
+    fontSize =
+        sharedPrefs.getInt(SharedPrefsKeys.fontSize.name) ?? defaultFontSize;
   }
 
   List<Widget> get settingsTiles => [
@@ -66,8 +69,23 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
           onTap: () => showDialog(
               context: context,
               builder: (BuildContext context) => inputDialogTextSlider(
-                  context, sharedPrefs, SharedPrefsKeys.fontSize.name, fontSize, FontSize.values,
+                  context,
+                  sharedPrefs,
+                  SharedPrefsKeys.fontSize.name,
+                  fontSize,
+                  FontSize.values,
                   titleText: "Font Size")).then((_) => setState(() {})),
+        ),
+        // Accessibility statemend
+        ListTile(
+          leading: const Icon(Icons.description_outlined),
+          title: const Text('Statement'),
+          subtitle: const Text('Read the accessibility statement'),
+          onTap: (() => Navigator.push(
+              context,
+              PageTransition(
+                  child: const AccessibilityStatementPage(),
+                  type: PageTransitionType.fade))),
         ),
       ];
 }

@@ -6,6 +6,7 @@ import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/provider/torch_provider.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/camera_screen.dart';
@@ -14,6 +15,9 @@ import '../settings/shared_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Request the storage permission
+  await Permission.storage.request();
+  // Hide the status bar and navigation bar
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // Ensure the app is launched in portrait mode
   await SystemChrome.setPreferredOrientations([

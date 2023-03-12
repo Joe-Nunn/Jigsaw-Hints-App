@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:jigsaw_hints/pages/widgets/gallery_picture.dart';
 import 'package:jigsaw_hints/provider/box_cover.dart';
 import 'package:jigsaw_hints/provider/images.dart';
