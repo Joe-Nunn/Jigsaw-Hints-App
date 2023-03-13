@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
+import 'package:jigsaw_hints/utils/shared_prefs_utils.dart';
 
 class GalleryPicture extends StatelessWidget {
   final File image;
@@ -38,7 +39,7 @@ class GalleryPicture extends StatelessWidget {
               Icon(Icons.check,
                       color: themeLightBlue.withOpacity(0.5), size: 50)
                   .animate()
-                  .scale(),
+                  .scale(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
           ],
         ),
       ),

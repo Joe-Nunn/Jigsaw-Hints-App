@@ -9,6 +9,7 @@ import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:jigsaw_hints/utils/navigation_utils.dart';
+import 'package:jigsaw_hints/utils/shared_prefs_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -109,7 +110,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
           }
         },
         label: const Text("Add New Box Cover"),
-      ).animate().fade(),
+      ).animate().fade(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
     );
   }
 
@@ -133,7 +134,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
               selected: selectedPictureIndex ==
                   images.capturedImages.indexOf(image) + 1))
           .toList(),
-    ).animate().fadeIn(duration: 500.ms).then().shimmer();
+    ).animate().fadeIn(duration: isAnimationEnabled(context) ? 500.ms : 0.ms).then().shimmer(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms);
   }
 
   Widget pictureActionButtons(ImagesProvider images, BoxCoverProvider box) {
@@ -143,11 +144,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            deleteButton(images, box).animate().flip(),
+            deleteButton(images, box).animate().flip(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
             const SizedBox(
               width: defaultWhitespaceSmall,
             ),
-            usePictureButton(images, box).animate().flip(),
+            usePictureButton(images, box).animate().flip(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
           ],
         ),
       ),
@@ -240,7 +241,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                 Icons.info_outline,
                 color: Colors.blue,
                 size: defaultIconSize,
-              ).animate().flipH(duration: 1.seconds),
+              ).animate().flipH(duration: isAnimationEnabled(context) ? 1.seconds : 0.ms),
               const SizedBox(width: defaultWhitespaceSmall),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.5,
@@ -251,7 +252,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       .bodyMedium
                       ?.copyWith(backgroundColor: Colors.grey[200]),
                 ),
-              ).animate(delay: 1.seconds).fadeIn(duration: 2.seconds),
+              ).animate(delay: 1.seconds).fadeIn(duration: isAnimationEnabled(context) ? 2.seconds : 0.ms),
             ],
           ),
         ],

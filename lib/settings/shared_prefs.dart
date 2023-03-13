@@ -16,4 +16,5 @@ enum SharedPrefsKeys {
   fontSize,
   debugMode,
   serverAddress,
+  enableAnimations,
 }

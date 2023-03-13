@@ -6,6 +6,7 @@ import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/ui/animations/animations.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
+import 'package:jigsaw_hints/utils/shared_prefs_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:animated_button/animated_button.dart';
 
@@ -71,7 +72,7 @@ Column boxSelectedContent(
               .animate(
                 onPlay: (controller) => controller.repeat(),
               )
-              .shimmer(duration: 3000.ms)
+              .shimmer(duration: isAnimationEnabled(context) ? 3.seconds : 0.ms)
               .then(delay: 5000.ms),
         ),
       ),
@@ -108,12 +109,12 @@ Column boxSelectedContent(
                   )
                   .tint(
                     color: Colors.greenAccent,
-                    duration: const Duration(milliseconds: 300),
+                    duration: isAnimationEnabled(context) ? 300.ms : 0.ms,
                   )
                   .then(delay: 500.ms)
                   .tint(
                       color: Colors.green,
-                      duration: const Duration(milliseconds: 300))
+                      duration: isAnimationEnabled(context) ? 300.ms : 0.ms)
                   .then(delay: 500.ms),
             ],
           ),
@@ -133,7 +134,7 @@ Column boxNotSelectedContent(BuildContext context) {
         height: desiredPieceSize / 1.5,
         child: Image.asset("images/jigsaw_box.png")
             .animate()
-            .shake(duration: 300.ms),
+            .shake(duration: isAnimationEnabled(context) ? 300.ms : 0.ms),
       ),
       imagesProvider.capturedImages.isEmpty
           ? AnimatedButton(
@@ -150,7 +151,9 @@ Column boxNotSelectedContent(BuildContext context) {
                       color: Colors.white,
                     ),
               ),
-            ).animate(delay: 300.ms).scale(duration: 200.ms)
+            )
+              .animate(delay: 300.ms)
+              .scale(duration: isAnimationEnabled(context) ? 200.ms : 0.ms)
           : AnimatedButton(
               onPressed: () {
                 Navigator.push(context, slideIn(const GalleryScreen()));
@@ -165,7 +168,9 @@ Column boxNotSelectedContent(BuildContext context) {
                       color: Colors.white,
                     ),
               ),
-            ).animate(delay: 300.ms).scale(duration: 200.ms)
+            )
+              .animate(delay: 300.ms)
+              .scale(duration: isAnimationEnabled(context) ? 200.ms : 0.ms)
     ],
   );
 }

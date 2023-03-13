@@ -12,6 +12,7 @@ import 'package:jigsaw_hints/ui/dialogs/jigsaw_piece_dialog.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/ui/dialogs/box_cover_dialog.dart';
+import 'package:jigsaw_hints/utils/shared_prefs_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../utils/constants.dart';
@@ -47,8 +48,8 @@ class _CameraScreenState extends State<CameraScreen>
       if (Provider.of<TorchProvider>(context, listen: false).status) {
         _controller.setFlashMode(FlashMode.torch);
       }
-       // Hide the status bar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);  
+      // Hide the status bar
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     }
   }
 
@@ -204,10 +205,12 @@ class _CameraScreenState extends State<CameraScreen>
             children: [
               CameraPreview(_controller),
               if (takingPicture)
-                const SpinKitSpinningLines(
+                SpinKitSpinningLines(
                   size: 100,
                   lineWidth: 3.0,
-                  duration: Duration(milliseconds: 4000),
+                  duration: isAnimationEnabled(context)
+                      ? const Duration(seconds: 4)
+                      : const Duration(hours: 24),
                   color: Colors.white,
                 ),
             ],

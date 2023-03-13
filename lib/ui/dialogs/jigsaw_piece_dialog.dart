@@ -15,6 +15,7 @@ import 'package:jigsaw_hints/settings/shared_prefs.dart';
 import 'package:jigsaw_hints/ui/dialogs/info_dialogs.dart';
 import 'package:jigsaw_hints/utils/constants.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:jigsaw_hints/utils/shared_prefs_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -169,11 +170,20 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
                 onComplete: (controller) => controller.repeat(),
               )
               .then(delay: 3.seconds)
-              .tint(duration: 2.seconds, color: Colors.green, end: 0.3)
+              .tint(
+                  duration: isAnimationEnabled(context) ? 2.seconds : 0.ms,
+                  color: Colors.green,
+                  end: 0.3)
               .then(delay: 3.seconds)
-              .tint(duration: 2.seconds, color: Colors.blue, end: 0.3)
+              .tint(
+                  duration: isAnimationEnabled(context) ? 2.seconds : 0.ms,
+                  color: Colors.blue,
+                  end: 0.3)
               .then(delay: 3.seconds)
-              .tint(duration: 2.seconds, color: Colors.red, end: 0.3)
+              .tint(
+                  duration: isAnimationEnabled(context) ? 2.seconds : 0.ms,
+                  color: Colors.red,
+                  end: 0.3)
               .then(delay: 3.seconds));
     }
     return const SpinKitFadingCircle(
@@ -225,11 +235,11 @@ class _JigsawPieceDialogState extends State<JigsawPieceDialog> {
                 }),
                 leftButton: popButton(context, text: "No"),
               )),
-      // LoadingBouncingGrid.square(
-      //   backgroundColor: themeLightBlue,
-      // ).animate().scale(),
-      const SpinKitCubeGrid(
+      SpinKitCubeGrid(
         color: themeLightBlue,
+        duration: isAnimationEnabled(context)
+            ? const Duration(milliseconds: 1200)
+            : const Duration(hours: 24),
       ),
       Text("Solving...", style: Theme.of(context).textTheme.labelMedium),
     ];

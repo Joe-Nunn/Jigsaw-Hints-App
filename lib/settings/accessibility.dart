@@ -20,7 +20,7 @@ class AccessibilitySettings extends StatefulWidget {
 
 class _AccessibilitySettingsState extends State<AccessibilitySettings> {
   late SharedPreferences sharedPrefs;
-  bool playAnimations = false;
+  late bool enableAnimations;
   late int fontSize;
 
   @override
@@ -42,7 +42,8 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
     sharedPrefs = context.watch<SharedPreferences>();
     fontSize =
         sharedPrefs.getInt(SharedPrefsKeys.fontSize.name) ?? defaultFontSize;
-    print("------------------------------------- $fontSize");
+    enableAnimations = sharedPrefs
+            .getBool(SharedPrefsKeys.enableAnimations.name) ?? defaultEnableAnimations;
   }
 
   List<Widget> get settingsTiles => [
@@ -53,12 +54,14 @@ class _AccessibilitySettingsState extends State<AccessibilitySettings> {
             title: const Text('Animations'),
             subtitle: const Text('Toggle animations'),
             trailing: Switch.adaptive(
-              value: playAnimations,
+              value: enableAnimations,
               activeColor: defaultSliderActiveColour,
               inactiveTrackColor: defaultSliderInactiveColour,
               onChanged: (value) {
                 setState(() {
-                  playAnimations = value;
+                  enableAnimations = value;
+                  sharedPrefs.setBool(SharedPrefsKeys.enableAnimations.name, value);
+                  MyApp.of(context).setState(() {});
                 });
               },
             ),
