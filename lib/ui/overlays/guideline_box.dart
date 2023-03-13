@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
+import 'package:jigsaw_hints/utils/shared_prefs_utils.dart';
 
 class GuidelineBox extends StatelessWidget {
   const GuidelineBox({
@@ -47,7 +48,7 @@ class GuidelineBox extends StatelessWidget {
             ),
           ),
         ),
-      ).animate().fade(duration: 2.seconds),
+      ).animate().fade(duration: isAnimationEnabled(context) ? 2.seconds : 0.ms),
     );
   }
 
@@ -74,7 +75,7 @@ class GuidelineBox extends StatelessWidget {
             ),
           ),
         ),
-      ).animate().fade(duration: 2.seconds),
+      ).animate().fade(duration: isAnimationEnabled(context) ? 2.seconds : 0.ms),
     );
   }
 }

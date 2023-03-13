@@ -6,6 +6,7 @@ import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/provider/images.dart';
 import 'package:jigsaw_hints/provider/torch_provider.dart';
 import 'package:jigsaw_hints/settings/default_settings.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/camera_screen.dart';
@@ -14,6 +15,9 @@ import '../settings/shared_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Request the storage permission
+  await Permission.storage.request();
+  // Hide the status bar and navigation bar
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // Ensure the app is launched in portrait mode
   await SystemChrome.setPreferredOrientations([
@@ -55,6 +59,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     sharedPrefs = context.watch<SharedPreferences>();
+    int fontSize =
+        sharedPrefs.getInt(SharedPrefsKeys.fontSize.name) ?? defaultFontSize;
+    double fontSizeMultiplier;
+    if (fontSize == 0) {
+      fontSizeMultiplier = 0.5;
+    } else if (fontSize == 1) {
+      fontSizeMultiplier = 1.0;
+    } else if (fontSize == 2) {
+      fontSizeMultiplier = 1.5;
+    } else {
+      fontSizeMultiplier = 1.0;
+    }
     return MaterialApp(
       title: 'Jigsaw Puzzle Solver',
       theme: ThemeData(
@@ -64,23 +80,31 @@ class _MyAppState extends State<MyApp> {
             secondary: constants.secondaryColour,
             tertiary: constants.tertiaryColour,
           ),
-          textTheme: const TextTheme(
-            labelMedium: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
-            titleMedium: TextStyle(fontSize: 20, fontFamily: 'Rubik'),
-            bodyMedium: TextStyle(fontSize: 16, fontFamily: 'Rubik'),
-            bodyLarge: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
+          textTheme: TextTheme(
+            labelMedium:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            titleMedium:
+                TextStyle(fontSize: 20.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            bodyMedium:
+                TextStyle(fontSize: 16.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            bodyLarge:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
           ),
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,
           )),
       darkTheme: ThemeData.dark().copyWith(
-          textTheme: const TextTheme(
-            labelMedium: TextStyle(fontSize: 18, fontFamily: 'Rubik'),
+          textTheme: TextTheme(
+            labelMedium:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
             titleMedium: TextStyle(
-                fontSize: 20,
+                fontSize: 20.0 * fontSizeMultiplier,
                 fontFamily: 'Rubik',
-                color: Color.fromARGB(255, 138, 138, 138)),
-            bodyMedium: TextStyle(fontSize: 16, fontFamily: 'Rubik'),
+                color: const Color(0xFF8A8A8A)),
+            bodyMedium:
+                TextStyle(fontSize: 16.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
+            bodyLarge:
+                TextStyle(fontSize: 18.0 * fontSizeMultiplier, fontFamily: 'Rubik'),
           ),
           sliderTheme: const SliderThemeData(
             showValueIndicator: ShowValueIndicator.always,

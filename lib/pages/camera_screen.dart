@@ -12,6 +12,7 @@ import 'package:jigsaw_hints/ui/dialogs/jigsaw_piece_dialog.dart';
 import 'package:jigsaw_hints/ui/menus/app_bar.dart';
 import 'package:jigsaw_hints/provider/camera_mode.dart';
 import 'package:jigsaw_hints/ui/dialogs/box_cover_dialog.dart';
+import 'package:jigsaw_hints/utils/shared_prefs_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../utils/constants.dart';
@@ -47,8 +48,8 @@ class _CameraScreenState extends State<CameraScreen>
       if (Provider.of<TorchProvider>(context, listen: false).status) {
         _controller.setFlashMode(FlashMode.torch);
       }
-       // Hide the status bar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);  
+      // Hide the status bar
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     }
   }
 
@@ -204,10 +205,12 @@ class _CameraScreenState extends State<CameraScreen>
             children: [
               CameraPreview(_controller),
               if (takingPicture)
-                const SpinKitSpinningLines(
+                SpinKitSpinningLines(
                   size: 100,
                   lineWidth: 3.0,
-                  duration: Duration(milliseconds: 4000),
+                  duration: isAnimationEnabled(context)
+                      ? const Duration(seconds: 4)
+                      : const Duration(hours: 24),
                   color: Colors.white,
                 ),
             ],
@@ -251,54 +254,58 @@ class _CameraScreenState extends State<CameraScreen>
 
   Widget takePictureButton(List<GlobalKey<State<StatefulWidget>>> keys,
       BuildContext context, CameraModeProvider camera, BoxCoverProvider box) {
-    return Align(
-      child: Showcase(
-        key: keys.elementAt(1),
-        description: 'Take photo of a box or puzzle',
-        child: TextButton(
-          onPressed: () async {
-            setState(() {
-              takingPicture = true;
-            });
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
-            // Attempt to take a picture and get the file
-            var xFile = await _controller.takePicture();
-            setState(() {
-              takingPicture = false;
-            });
-            var path = xFile.path;
-            if (!mounted) return;
-            // If the box picture was taken, display it in a popup.
-            if (camera.mode == CameraMode.box) {
-              showDialog(
+    return Consumer<TorchProvider>(builder: (context, torch, child) {
+      return Align(
+        child: Showcase(
+          key: keys.elementAt(1),
+          description: 'Take photo of a box or puzzle',
+          child: TextButton(
+            onPressed: () async {
+              setState(() {
+                takingPicture = true;
+              });
+              // Ensure that the camera is initialized.
+              await _initializeControllerFuture;
+              // Attempt to take a picture and get the file
+              var xFile = await _controller.takePicture();
+              setState(() {
+                takingPicture = false;
+                _controller.setFlashMode(FlashMode.off);
+                torch.status = false;
+              });
+              var path = xFile.path;
+              if (!mounted) return;
+              // If the box picture was taken, display it in a popup.
+              if (camera.mode == CameraMode.box) {
+                showDialog(
+                    context: context,
+                    builder: (_) => imagePreviewDialog(context, xFile),
+                    barrierDismissible: false);
+              } else if (camera.mode == CameraMode.piece) {
+                // Send image to the server
+                showDialog(
                   context: context,
-                  builder: (_) => imagePreviewDialog(context, xFile),
-                  barrierDismissible: false);
-            } else if (camera.mode == CameraMode.piece) {
-              // Send image to the server
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) => JigsawPieceDialog(
-                  piece: File(path),
-                  base: box.boxCover!,
-                ),
-              );
-            }
-          },
-          style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            shape: const CircleBorder(),
-          ),
-          child: Icon(
-            Icons.circle,
-            color: Theme.of(context).colorScheme.primary,
-            size: defaultIconSize,
+                  barrierDismissible: false,
+                  builder: (_) => JigsawPieceDialog(
+                    piece: File(path),
+                    base: box.boxCover!,
+                  ),
+                );
+              }
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: const CircleBorder(),
+            ),
+            child: Icon(
+              Icons.circle,
+              color: Theme.of(context).colorScheme.primary,
+              size: defaultIconSize,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget flashButton(List<GlobalKey<State<StatefulWidget>>> keys) {
