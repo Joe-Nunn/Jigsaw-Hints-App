@@ -254,54 +254,58 @@ class _CameraScreenState extends State<CameraScreen>
 
   Widget takePictureButton(List<GlobalKey<State<StatefulWidget>>> keys,
       BuildContext context, CameraModeProvider camera, BoxCoverProvider box) {
-    return Align(
-      child: Showcase(
-        key: keys.elementAt(1),
-        description: 'Take photo of a box or puzzle',
-        child: TextButton(
-          onPressed: () async {
-            setState(() {
-              takingPicture = true;
-            });
-            // Ensure that the camera is initialized.
-            await _initializeControllerFuture;
-            // Attempt to take a picture and get the file
-            var xFile = await _controller.takePicture();
-            setState(() {
-              takingPicture = false;
-            });
-            var path = xFile.path;
-            if (!mounted) return;
-            // If the box picture was taken, display it in a popup.
-            if (camera.mode == CameraMode.box) {
-              showDialog(
+    return Consumer<TorchProvider>(builder: (context, torch, child) {
+      return Align(
+        child: Showcase(
+          key: keys.elementAt(1),
+          description: 'Take photo of a box or puzzle',
+          child: TextButton(
+            onPressed: () async {
+              setState(() {
+                takingPicture = true;
+              });
+              // Ensure that the camera is initialized.
+              await _initializeControllerFuture;
+              // Attempt to take a picture and get the file
+              var xFile = await _controller.takePicture();
+              setState(() {
+                takingPicture = false;
+                _controller.setFlashMode(FlashMode.off);
+                torch.status = false;
+              });
+              var path = xFile.path;
+              if (!mounted) return;
+              // If the box picture was taken, display it in a popup.
+              if (camera.mode == CameraMode.box) {
+                showDialog(
+                    context: context,
+                    builder: (_) => imagePreviewDialog(context, xFile),
+                    barrierDismissible: false);
+              } else if (camera.mode == CameraMode.piece) {
+                // Send image to the server
+                showDialog(
                   context: context,
-                  builder: (_) => imagePreviewDialog(context, xFile),
-                  barrierDismissible: false);
-            } else if (camera.mode == CameraMode.piece) {
-              // Send image to the server
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (_) => JigsawPieceDialog(
-                  piece: File(path),
-                  base: box.boxCover!,
-                ),
-              );
-            }
-          },
-          style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            shape: const CircleBorder(),
-          ),
-          child: Icon(
-            Icons.circle,
-            color: Theme.of(context).colorScheme.primary,
-            size: defaultIconSize,
+                  barrierDismissible: false,
+                  builder: (_) => JigsawPieceDialog(
+                    piece: File(path),
+                    base: box.boxCover!,
+                  ),
+                );
+              }
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: const CircleBorder(),
+            ),
+            child: Icon(
+              Icons.circle,
+              color: Theme.of(context).colorScheme.primary,
+              size: defaultIconSize,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget flashButton(List<GlobalKey<State<StatefulWidget>>> keys) {
