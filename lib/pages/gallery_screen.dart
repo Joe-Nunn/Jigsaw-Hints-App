@@ -110,7 +110,9 @@ class _GalleryScreenState extends State<GalleryScreen> {
           }
         },
         label: const Text("Add New Box Cover"),
-      ).animate().fade(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
+      ).animate().fade(
+          duration:
+              isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
     );
   }
 
@@ -134,7 +136,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
               selected: selectedPictureIndex ==
                   images.capturedImages.indexOf(image) + 1))
           .toList(),
-    ).animate().fadeIn(duration: isAnimationEnabled(context) ? 500.ms : 0.ms).then().shimmer(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms);
+    )
+        .animate()
+        .fadeIn(duration: isAnimationEnabled(context) ? 500.ms : 0.ms)
+        .then()
+        .shimmer(
+            duration:
+                isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms);
   }
 
   Widget pictureActionButtons(ImagesProvider images, BoxCoverProvider box) {
@@ -144,11 +152,17 @@ class _GalleryScreenState extends State<GalleryScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            deleteButton(images, box).animate().flip(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
+            deleteButton(images, box).animate().flip(
+                duration: isAnimationEnabled(context)
+                    ? Animate.defaultDuration
+                    : 0.ms),
             const SizedBox(
               width: defaultWhitespaceSmall,
             ),
-            usePictureButton(images, box).animate().flip(duration: isAnimationEnabled(context) ? Animate.defaultDuration : 0.ms),
+            usePictureButton(images, box).animate().flip(
+                duration: isAnimationEnabled(context)
+                    ? Animate.defaultDuration
+                    : 0.ms),
           ],
         ),
       ),
@@ -166,9 +180,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
       successColor: Colors.green,
       borderRadius: defaultDialogBorderRadiusBig,
       onPressed: () {
-        setState(() {
-          return usePicture(selectedBoxCover, box);
-        });
+        usePicture(selectedBoxCover, box);
       },
       child: Text(
         'Use Box Cover',
@@ -241,7 +253,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
                 Icons.info_outline,
                 color: Colors.blue,
                 size: defaultIconSize,
-              ).animate().flipH(duration: isAnimationEnabled(context) ? 1.seconds : 0.ms),
+              ).animate().flipH(
+                  duration: isAnimationEnabled(context) ? 1.seconds : 0.ms),
               const SizedBox(width: defaultWhitespaceSmall),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.5,
@@ -252,7 +265,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
                       .bodyMedium
                       ?.copyWith(backgroundColor: Colors.grey[200]),
                 ),
-              ).animate(delay: 1.seconds).fadeIn(duration: isAnimationEnabled(context) ? 2.seconds : 0.ms),
+              ).animate(delay: 1.seconds).fadeIn(
+                  duration: isAnimationEnabled(context) ? 2.seconds : 0.ms),
             ],
           ),
         ],
