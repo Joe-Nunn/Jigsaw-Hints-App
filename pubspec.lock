@@ -21,7 +21,7 @@ packages:
       name: babstrap_settings_screen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.3"
+    version: "0.1.5+1"
   boolean_selector:
     dependency: transitive
     description:
@@ -35,35 +35,35 @@ packages:
       name: camera
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.0+4"
+    version: "0.10.3+2"
   camera_android:
     dependency: transitive
     description:
       name: camera_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.0+4"
+    version: "0.10.5"
   camera_avfoundation:
     dependency: transitive
     description:
       name: camera_avfoundation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.8+6"
+    version: "0.9.13+1"
   camera_platform_interface:
     dependency: transitive
     description:
       name: camera_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.1"
+    version: "2.4.1"
   camera_web:
     dependency: transitive
     description:
       name: camera_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0+1"
+    version: "0.3.1+3"
   characters:
     dependency: transitive
     description:
@@ -91,7 +91,7 @@ packages:
       name: cross_file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3+2"
+    version: "0.3.3+4"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -138,7 +138,7 @@ packages:
       name: flutter_animate
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -152,14 +152,14 @@ packages:
       name: flutter_pdfview
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.5"
+    version: "1.2.9"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.7"
+    version: "2.0.9"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -267,35 +267,35 @@ packages:
       name: path_provider_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.23"
+    version: "2.0.24"
   path_provider_foundation:
     dependency: transitive
     description:
       name: path_provider_foundation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.2.0"
   path_provider_linux:
     dependency: transitive
     description:
       name: path_provider_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.7"
+    version: "2.1.10"
   path_provider_platform_interface:
     dependency: transitive
     description:
       name: path_provider_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "2.0.6"
   path_provider_windows:
     dependency: transitive
     description:
       name: path_provider_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.5"
   permission_handler:
     dependency: "direct main"
     description:
@@ -338,6 +338,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.0"
+  pinch_zoom:
+    dependency: "direct main"
+    description:
+      name: pinch_zoom
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   platform:
     dependency: transitive
     description:
@@ -351,7 +358,7 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.4"
   process:
     dependency: transitive
     description:
@@ -372,7 +379,7 @@ packages:
       name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.1"
   rounded_loading_button:
     dependency: "direct main"
     description:
@@ -393,63 +400,56 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.15"
+    version: "2.0.18"
   shared_preferences_android:
     dependency: transitive
     description:
       name: shared_preferences_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.14"
-  shared_preferences_ios:
+    version: "2.0.17"
+  shared_preferences_foundation:
     dependency: transitive
     description:
-      name: shared_preferences_ios
+      name: shared_preferences_foundation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.5"
   shared_preferences_linux:
     dependency: transitive
     description:
       name: shared_preferences_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
-  shared_preferences_macos:
-    dependency: transitive
-    description:
-      name: shared_preferences_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
+    version: "2.1.5"
   shared_preferences_platform_interface:
     dependency: transitive
     description:
       name: shared_preferences_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   shared_preferences_web:
     dependency: transitive
     description:
       name: shared_preferences_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.6"
   shared_preferences_windows:
     dependency: transitive
     description:
       name: shared_preferences_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.5"
   showcaseview:
     dependency: "direct main"
     description:
       name: showcaseview
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0+1"
+    version: "2.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -524,14 +524,14 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
   xdg_directories:
     dependency: transitive
     description:
       name: xdg_directories
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0+2"
+    version: "1.0.0"
   zoom_pinch_overlay:
     dependency: "direct main"
     description:
@@ -541,4 +541,4 @@ packages:
     version: "1.3.2"
 sdks:
   dart: ">=2.18.1 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.3.0"

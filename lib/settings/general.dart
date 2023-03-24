@@ -20,7 +20,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
   late SharedPreferences sharedPrefs;
   // Values
   late int hintAccuracy;
-  late int algorithmCorrectness;
+  late int algorithmType;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +41,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
     sharedPrefs = context.watch<SharedPreferences>();
     hintAccuracy = sharedPrefs.getInt(SharedPrefsKeys.hintAccuracy.name) ??
         defaultHintAccuracy;
-    algorithmCorrectness =
-        sharedPrefs.getInt(SharedPrefsKeys.algorithmType.name) ??
-            defaultAlgorithmType;
+    algorithmType = sharedPrefs.getInt(SharedPrefsKeys.algorithmType.name) ??
+        defaultAlgorithmType;
   }
 
   List<Widget> get settingsTiles => [
@@ -68,25 +67,110 @@ class _GeneralSettingsState extends State<GeneralSettings> {
         ListTile(
           leading: const Icon(CupertinoIcons.flame),
           title: const Text('Algorithm'),
-          subtitle: const Text('Choose solving technique'),
+          subtitle: const Text('Choose solving method'),
           trailing: SizedBox(
             width: MediaQuery.of(context).size.width * 0.15,
             child: Align(
               alignment: Alignment.centerRight,
-              child: Text(
-                  describeEnum(AlgorithmType.values[algorithmCorrectness])
-                      .toUpperCase()),
+              child: Text(describeEnum(AlgorithmType.values[algorithmType])
+                  .toUpperCase()),
             ),
           ),
           onTap: () => showDialog(
               context: context,
-              builder: (BuildContext context) => inputDialogTextSlider(
+              builder: (BuildContext context) => radioButtonDialog(
                   context,
                   sharedPrefs,
                   SharedPrefsKeys.algorithmType.name,
-                  algorithmCorrectness,
-                  AlgorithmType.values,
+                  algorithmType,
                   titleText: "Algorithm type")).then((_) => setState(() {})),
         ),
       ];
+
+  StatefulBuilder radioButtonDialog(BuildContext context,
+      SharedPreferences sharedPrefs, String key, int currentValue,
+      {String titleText = "Choose option"}) {
+    bool valueHasChanged = false;
+    int currentButtonValue = currentValue;
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          title: Text(titleText),
+          content: Wrap(
+            children: [
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Radio(
+                        activeColor: themeLightBlue,
+                        value: 0,
+                        groupValue: currentButtonValue,
+                        onChanged: (value) {
+                          setState(() {
+                            currentButtonValue = value!;
+                            if (currentButtonValue != currentValue) {
+                              valueHasChanged = true;
+                            } else {
+                              valueHasChanged = false;
+                            }
+                          });
+                        },
+                      ),
+                      const Text('Hint Box + Heatmap'),
+                    ],
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Radio(
+                        activeColor: themeLightBlue,
+                        value: 1,
+                        groupValue: currentButtonValue,
+                        onChanged: (value) {
+                          setState(() {
+                            currentButtonValue = value!;
+                            if (currentButtonValue != currentValue) {
+                              valueHasChanged = true;
+                            } else {
+                              valueHasChanged = false;
+                            }
+                          });
+                        },
+                      ),
+                      const Text('Heatmap Only'),
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
+          actions: <Widget>[
+            Visibility(
+              visible: valueHasChanged,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: TextButton(
+                child: Text(
+                  "Apply",
+                  style: Theme.of(context)
+                      .textTheme
+                      .labelMedium
+                      ?.copyWith(color: Theme.of(context).colorScheme.tertiary),
+                ),
+                onPressed: () {
+                  sharedPrefs.setInt(key, currentButtonValue);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
