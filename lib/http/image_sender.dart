@@ -11,7 +11,7 @@ class ImageSender {
   final HttpClient _client = HttpClient();
   final String serverAddressEmulator = "http://10.0.2.2:5000";
   final String contentType = "application/json";
-  final Duration timeoutDuration = const Duration(seconds: 60);
+  final Duration timeoutDuration = const Duration(seconds: 600);
 
   Future<List<String>> retrieveDataFromFlask(String serverAddress) async {
     List<String> groups = [];
