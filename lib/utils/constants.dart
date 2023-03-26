@@ -1,0 +1,24 @@
+import 'package:flutter/material.dart';
+
+const Color primaryColour = Colors.white;
+const Color secondaryColour = Colors.blue;
+const Color tertiaryColour = Colors.green;
+const Color logoBgColour = Color(0xfff3ebe3);
+const Color logoFontColour = Color(0xff5065a8);
+const Color themeLightBlue = Color.fromARGB(255, 117, 193, 254);
+const Color themeLightRed = Color(0xfffb7a8f);
+const Color themeLightGreen = Colors.lightGreen;
+const Color bottomNavBgColour = Color(0xFF16232B);
+const Color defaultSliderActiveColour = Color.fromARGB(255, 117, 193, 254);
+const Color defaultSliderInactiveColour = Color.fromRGBO(224, 224, 224, 1);
+const double defaultAppBarPadding = 15.0;
+const double defaultDialogPadding = 15.0;
+const double defaultContentPaddingBig = 16.0;
+const double defaultContentPaddingMedium = 12.0;
+const double defaultContentPaddingSmall = 10.0;
+const double defaultDialogBorderRadiusBig = 16.0;
+const double defaultDialogBorderRadiusSmall = 10.0;
+const double desiredPieceSize = 256.0;
+const double defaultIconSize = 40.0;
+const double defaultWhitespaceSmall = 20.0;
+const double defaultCameraPreviewRatio = 1.44;
